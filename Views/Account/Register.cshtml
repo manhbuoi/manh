@@ -1,0 +1,198 @@
+@model cuahanggiay.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Đăng Ký - Vua Giày Hiệu";
+}
+
+<link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+
+<!-- REGISTER BANNER -->
+<section class="auth-banner">
+    <div class="container">
+        <div class="banner-content">
+            <h1>Tạo Tài Khoản Mới</h1>
+            <p>Tham gia cộng đồng yêu giày của chúng tôi</p>
+        </div>
+    </div>
+</section>
+
+<!-- BREADCRUMB -->
+<section class="breadcrumb-section">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Đăng ký</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- REGISTER FORM -->
+<section class="auth-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <div class="auth-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h3 class="auth-title">Đăng Ký Tài Khoản</h3>
+                        <p class="auth-subtitle">Tạo tài khoản để trải nghiệm đầy đủ các tính năng của chúng tôi</p>
+                    </div>
+
+                    <div class="auth-body">
+                        <form asp-action="Register" method="post" class="auth-form" novalidate>
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+
+                            <div class="form-group">
+                                <label asp-for="FullName" class="form-label">
+                                    <i class="fas fa-user"></i> Họ và tên <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="FullName" class="form-control" placeholder="Nhập họ và tên đầy đủ" />
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Email" class="form-label">
+                                    <i class="fas fa-envelope"></i> Email <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="Email" type="email" class="form-control" placeholder="Nhập địa chỉ email" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Password" class="form-label">
+                                    <i class="fas fa-lock"></i> Mật khẩu <span class="text-danger">*</span>
+                                </label>
+                                <div class="password-input-container">
+                                    <input asp-for="Password" type="password" class="form-control" placeholder="Tạo mật khẩu mạnh (tối thiểu 6 ký tự)" id="password" />
+                                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                                        <i class="fas fa-eye" id="password-icon"></i>
+                                    </button>
+                                </div>
+                                <div class="password-strength mt-2">
+                                    <div class="strength-bar">
+                                        <div class="strength-fill" id="strength-fill"></div>
+                                    </div>
+                                    <small class="strength-text" id="strength-text">Độ mạnh mật khẩu</small>
+                                </div>
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="ConfirmPassword" class="form-label">
+                                    <i class="fas fa-lock"></i> Xác nhận mật khẩu <span class="text-danger">*</span>
+                                </label>
+                                <div class="password-input-container">
+                                    <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Nhập lại mật khẩu" id="confirmPassword" />
+                                    <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
+                                        <i class="fas fa-eye" id="confirm-icon"></i>
+                                    </button>
+                                </div>
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="termsCheck" required />
+                                    <label class="form-check-label" for="termsCheck">
+                                        Tôi đồng ý với <a href="#" class="text-primary">Điều khoản sử dụng</a> và <a href="#" class="text-primary">Chính sách bảo mật</a>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary btn-auth">
+                                    <i class="fas fa-user-plus"></i> Đăng Ký Ngay
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="auth-footer">
+                            <p class="mb-0">Đã có tài khoản?
+                                <a asp-action="Login" class="auth-link">
+                                    <i class="fas fa-sign-in-alt"></i> Đăng nhập ngay
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Benefits Section -->
+                <div class="auth-benefits mt-4">
+                    <h4 class="benefits-title">
+                        <i class="fas fa-star"></i> Lợi ích khi đăng ký
+                    </h4>
+                    <div class="benefits-list">
+                        <div class="benefit-item">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Mua hàng nhanh chóng và dễ dàng</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-truck"></i>
+                            <span>Theo dõi đơn hàng mọi lúc</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-tags"></i>
+                            <span>Nhận ưu đãi và khuyến mãi đặc biệt</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-headset"></i>
+                            <span>Hỗ trợ khách hàng 24/7</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(inputId === 'password' ? 'password-icon' : 'confirm-icon');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        // Password strength indicator
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthFill = document.getElementById('strength-fill');
+            const strengthText = document.getElementById('strength-text');
+
+            let strength = 0;
+            if (password.length >= 6) strength++;
+            if (password.match(/[a-z]/)) strength++;
+            if (password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+
+            const percentage = (strength / 5) * 100;
+            strengthFill.style.width = percentage + '%';
+
+            if (strength <= 1) {
+                strengthFill.style.background = '#dc3545';
+                strengthText.textContent = 'Yếu';
+                strengthText.style.color = '#dc3545';
+            } else if (strength <= 3) {
+                strengthFill.style.background = '#ffc107';
+                strengthText.textContent = 'Trung bình';
+                strengthText.style.color = '#ffc107';
+            } else {
+                strengthFill.style.background = '#28a745';
+                strengthText.textContent = 'Mạnh';
+                strengthText.style.color = '#28a745';
+            }
+        });
+    </script>
+}

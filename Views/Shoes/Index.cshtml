@@ -1,0 +1,807 @@
+@model IEnumerable<cuahanggiay.Models.Shoe>
+
+@{
+    ViewData["Title"] = "Cửa Hàng Giày Hiệu - Bộ Sưu Tập Chất Lượng Cao";
+    var currentCategory = ViewData["ActiveCategory"]?.ToString();
+    var currentSearch = ViewData["CurrentSearch"]?.ToString();
+    var currentSort = ViewData["Sort"]?.ToString();
+    var currentMaxPrice = ViewData["CurrentMaxPrice"] ?? 10000000;
+    var categories = ViewData["Categories"] as IEnumerable<cuahanggiay.Models.Category>;
+    var brands = ViewData["Brands"] as IEnumerable<cuahanggiay.Models.Brand>;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #dc3545;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --dark-text: #212529;
+            --shadow: 0 2px 15px rgba(0,0,0,0.1);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--light-bg);
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #b02a37 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+        }
+
+        .breadcrumb-custom {
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--border-radius);
+            padding: 0.75rem 1rem;
+        }
+
+        .breadcrumb-custom .breadcrumb-item a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+        }
+
+        .breadcrumb-custom .breadcrumb-item.active {
+            color: white;
+            font-weight: 600;
+        }
+
+        .filter-sidebar {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 2rem;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .filter-title {
+            color: var(--dark-text);
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .filter-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 3rem;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .price-slider {
+            margin: 1.5rem 0;
+        }
+
+        .price-display {
+            background: var(--light-bg);
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary-color);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .category-btn {
+            border-radius: 8px;
+            font-weight: 500;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .category-btn.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
+
+        .search-sort-bar {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            border-radius: 25px;
+            border: 2px solid #e9ecef;
+            padding: 0.5rem 1rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+        .search-btn {
+            border-radius: 25px;
+            background: var(--primary-color);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            transition: var(--transition);
+        }
+
+        .search-btn:hover {
+            background: #b02a37;
+            transform: scale(1.05);
+        }
+
+        .sort-dropdown .btn {
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            font-weight: 500;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .product-image-container {
+            position: relative;
+            overflow: hidden;
+            height: 250px;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.1);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-body {
+            padding: 1.5rem;
+        }
+
+        .product-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark-text);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-title a {
+            color: inherit;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .product-title a:hover {
+            color: var(--primary-color);
+        }
+
+        .product-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-old-price {
+            text-decoration: line-through;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+        }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .product-category {
+            font-size: 0.8rem;
+            color: var(--secondary-color);
+            background: var(--light-bg);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .star-rating {
+            color: #ffc107;
+            font-size: 0.8rem;
+        }
+
+        .rating-text {
+            font-size: 0.75rem;
+            color: var(--secondary-color);
+            margin-left: 0.25rem;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-view-details {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            flex: 1;
+            text-align: center;
+        }
+
+        .btn-view-details:hover {
+            background: #b02a37;
+            color: white;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        .btn-wishlist {
+            background: white;
+            border: 2px solid #e9ecef;
+            color: var(--secondary-color);
+            border-radius: 8px;
+            padding: 0.75rem;
+            transition: var(--transition);
+        }
+
+        .btn-wishlist:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .pagination-custom {
+            margin-top: 3rem;
+        }
+
+        .pagination-custom .page-link {
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            color: var(--dark-text);
+            font-weight: 500;
+            margin: 0 0.25rem;
+            transition: var(--transition);
+        }
+
+        .pagination-custom .page-link:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .pagination-custom .page-item.active .page-link {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
+
+        .no-products {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .no-products-icon {
+            font-size: 4rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .no-products-title {
+            color: var(--dark-text);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .no-products-text {
+            color: var(--secondary-color);
+            margin-bottom: 2rem;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 4px solid var(--light-bg);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @@media (max-width: 768px) {
+            .page-header {
+                padding: 2rem 0;
+                text-align: center;
+            }
+
+            .search-sort-bar {
+                padding: 1rem;
+            }
+
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1rem;
+            }
+
+            .filter-sidebar {
+                position: static;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+}
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+</div>
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="breadcrumb-custom">
+            <ol class="breadcrumb mb-3">
+                <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Cửa hàng</li>
+            </ol>
+        </nav>
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-3">Cửa Hàng Giày Hiệu</h1>
+                <p class="lead mb-0">Khám phá bộ sưu tập giày hàng hiệu chất lượng cao với đa dạng mẫu mã và kích cỡ</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <div class="stats">
+                    <div class="d-flex justify-content-lg-end justify-content-center gap-4">
+                        <div>
+                            <div class="h4 mb-0 text-white">1000+</div>
+                            <small class="text-white-50">Sản phẩm</small>
+                        </div>
+                        <div>
+                            <div class="h4 mb-0 text-white">50+</div>
+                            <small class="text-white-50">Thương hiệu</small>
+                        </div>
+                        <div>
+                            <div class="h4 mb-0 text-white">4.8</div>
+                            <small class="text-white-50">Đánh giá</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar Filters -->
+            <div class="col-lg-3">
+                <div class="filter-sidebar">
+                    <h5 class="filter-title">Bộ lọc sản phẩm</h5>
+
+                    <!-- Price Filter -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3 text-dark">Lọc theo giá</h6>
+                        <form method="get" asp-controller="Shoes" asp-action="Index" id="priceForm">
+                            <input type="hidden" name="category" value="@currentCategory" />
+                            <input type="hidden" name="search" value="@currentSearch" />
+                            <input type="hidden" name="sort" value="@currentSort" />
+                            <input type="range" name="maxPrice" class="form-range price-slider" min="0" max="10000000" step="100000"
+                                   value="@currentMaxPrice" id="priceRange" onchange="updatePriceDisplay(this.value)">
+                            <div class="price-display" id="priceDisplay">
+                                ≤ @String.Format("{0:N0}", currentMaxPrice) ₫
+                            </div>
+                            <button type="submit" class="btn btn-danger w-100 mt-3 fw-bold" onclick="showLoading()">
+                                <i class="bi bi-funnel me-2"></i>Áp dụng bộ lọc
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3 text-dark">Danh mục</h6>
+                        <div class="d-grid gap-2">
+                            <a class="btn category-btn @(string.IsNullOrEmpty(currentCategory) ? "active" : "btn-outline-secondary")"
+                               asp-controller="Shoes" asp-action="Index" asp-route-category="" onclick="showLoading()">
+                                <i class="bi bi-grid me-2"></i>Tất cả sản phẩm
+                            </a>
+                            @if (categories != null)
+                            {
+                                @foreach (var category in categories)
+                                {
+                                    <a class="btn category-btn @(currentCategory?.ToLower() == category.Name.ToLower() ? "active" : "btn-outline-secondary")"
+                                       asp-controller="Shoes" asp-action="Index" asp-route-category="@category.Name.ToLower()" onclick="showLoading()">
+                                        <i class="bi bi-tag me-2"></i>@category.Name
+                                    </a>
+                                }
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Brands -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3 text-dark">Thương hiệu</h6>
+                        <div class="d-grid gap-2">
+                            @if (brands != null)
+                            {
+                                @foreach (var brand in brands)
+                                {
+                                    <a class="btn btn-outline-secondary btn-sm"
+                                       asp-controller="Shoes" asp-action="Index" asp-route-search="@brand.Name" onclick="showLoading()">
+                                        <i class="bi bi-award me-2"></i>@brand.Name
+                                    </a>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <!-- Search and Sort Bar -->
+                <div class="search-sort-bar">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <form class="d-flex gap-2" asp-controller="Shoes" asp-action="Index" method="get">
+                                <input type="hidden" name="category" value="@currentCategory" />
+                                <input type="hidden" name="sort" value="@currentSort" />
+                                <input type="hidden" name="maxPrice" value="@currentMaxPrice" />
+                                <input type="text" name="search" value="@currentSearch" class="form-control search-input"
+                                       placeholder="Tìm kiếm giày theo tên, thương hiệu..." />
+                                <button type="submit" class="btn search-btn" onclick="showLoading()">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <div class="sort-dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-sort-down me-2"></i>
+                                    @if (string.IsNullOrEmpty(currentSort))
+                                    {
+                                        <span>Sắp xếp: Mặc định</span>
+                                    }
+                                    else if (currentSort == "price_asc")
+                                    {
+                                        <span>Giá: Thấp - Cao</span>
+                                    }
+                                    else if (currentSort == "price_desc")
+                                    {
+                                        <span>Giá: Cao - Thấp</span>
+                                    }
+                                    else if (currentSort == "newest")
+                                    {
+                                        <span>Mới nhất</span>
+                                    }
+                                </button>
+                                <ul class="dropdown-menu w-100">
+                                    <li><a class="dropdown-item @(string.IsNullOrEmpty(currentSort) ? "active" : "")"
+                                           asp-controller="Shoes" asp-action="Index"
+                                           asp-route-category="@currentCategory"
+                                           asp-route-search="@currentSearch"
+                                           asp-route-maxPrice="@currentMaxPrice"
+                                           onclick="showLoading()">Mặc định</a></li>
+                                    <li><a class="dropdown-item @(currentSort == "price_asc" ? "active" : "")"
+                                           asp-controller="Shoes" asp-action="Index"
+                                           asp-route-category="@currentCategory"
+                                           asp-route-search="@currentSearch"
+                                           asp-route-maxPrice="@currentMaxPrice"
+                                           asp-route-sort="price_asc"
+                                           onclick="showLoading()">Giá: Thấp - Cao</a></li>
+                                    <li><a class="dropdown-item @(currentSort == "price_desc" ? "active" : "")"
+                                           asp-controller="Shoes" asp-action="Index"
+                                           asp-route-category="@currentCategory"
+                                           asp-route-search="@currentSearch"
+                                           asp-route-maxPrice="@currentMaxPrice"
+                                           asp-route-sort="price_desc"
+                                           onclick="showLoading()">Giá: Cao - Thấp</a></li>
+                                    <li><a class="dropdown-item @(currentSort == "newest" ? "active" : "")"
+                                           asp-controller="Shoes" asp-action="Index"
+                                           asp-route-category="@currentCategory"
+                                           asp-route-search="@currentSearch"
+                                           asp-route-maxPrice="@currentMaxPrice"
+                                           asp-route-sort="newest"
+                                           onclick="showLoading()">Mới nhất</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                @if (Model.Any())
+                {
+                    <div class="product-grid">
+                        @foreach (var item in Model)
+                        {
+                            <div class="product-card">
+                                <div class="product-image-container">
+                                    <img src="~/images/@(string.IsNullOrEmpty(item.ImageUrl) ? "default-shoe.jpg" : item.ImageUrl)"
+                                         class="product-image" alt="@item.Name" loading="lazy">
+                                    @if (item.IsFeatured)
+                                    {
+                                        <div class="product-badge">Nổi bật</div>
+                                    }
+                                    @if (item.Tonkho > 0)
+                                    {
+                                        <div class="position-absolute top-0 end-0 m-2">
+                                            <span class="badge bg-success">Còn hàng</span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="position-absolute top-0 end-0 m-2">
+                                            <span class="badge bg-danger">Hết hàng</span>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="product-body">
+                                    <h5 class="product-title">
+                                        <a href="/Shoes/Details/@item.Id" title="@item.Name">@item.Name</a>
+                                    </h5>
+                                    <div class="product-meta">
+                                        <span class="product-category">@item.Category?.Name</span>
+                                        <div class="product-rating">
+                                            <div class="star-rating">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    <i class="bi @(i <= item.Rating ? "bi-star-fill" : "bi-star")"></i>
+                                                }
+                                            </div>
+                                            <span class="rating-text">(@item.Rating)</span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        @if (item.OldPrice.HasValue && item.OldPrice > item.Price)
+                                        {
+                                            <span class="product-price">@item.Price.ToString("N0") ₫</span>
+                                            <span class="product-old-price">@item.OldPrice.Value.ToString("N0") ₫</span>
+                                            <div class="mt-1">
+                                                <span class="badge bg-success">
+                                                    Giảm @(((item.OldPrice.Value - item.Price) / item.OldPrice.Value * 100).ToString("F0"))%
+                                                </span>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="product-price">@item.Price.ToString("N0") ₫</span>
+                                        }
+                                    </div>
+                                    <div class="product-actions">
+                                        <a href="/Shoes/Details/@item.Id" class="btn-view-details">
+                                            <i class="bi bi-eye me-1"></i>Xem chi tiết
+                                        </a>
+                                        <button class="btn btn-wishlist" title="Thêm vào yêu thích">
+                                            <i class="bi bi-heart"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav aria-label="Product pagination" class="pagination-custom">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                    <i class="bi bi-chevron-left me-1"></i>Trước
+                                </a>
+                            </li>
+                            <li class="page-item active">
+                                <a class="page-link" href="#">1</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">2</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">3</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    Sau<i class="bi bi-chevron-right ms-1"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                }
+                else
+                {
+                    <div class="no-products">
+                        <div class="no-products-icon">
+                            <i class="bi bi-search"></i>
+                        </div>
+                        <h4 class="no-products-title">Không tìm thấy sản phẩm nào</h4>
+                        <p class="no-products-text">Hãy thử điều chỉnh bộ lọc hoặc tìm kiếm với từ khóa khác.</p>
+                        <a href="/Shoes" class="btn btn-danger btn-lg" onclick="showLoading()">
+                            <i class="bi bi-grid me-2"></i>Xem tất cả sản phẩm
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function updatePriceDisplay(value) {
+            const formattedValue = new Intl.NumberFormat('vi-VN').format(value);
+            document.getElementById('priceDisplay').innerHTML = '≤ ' + formattedValue + ' ₫';
+        }
+
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        // Hide loading on page load
+        window.addEventListener('load', function() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        });
+
+        // Add smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add loading state to forms
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function() {
+                showLoading();
+            });
+        });
+
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    </script>
+}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Pagination (if needed) -->
+                    <nav aria-label="Product pagination" class="mt-5">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1">Trước</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">2</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">3</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Sau</a>
+                            </li>
+                        </ul>
+                    </nav>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+                        <h4 class="mt-3 text-muted">Không tìm thấy sản phẩm nào</h4>
+                        <p class="text-muted">Hãy thử điều chỉnh bộ lọc hoặc tìm kiếm khác.</p>
+                        <a href="/Shoes" class="btn btn-danger">Xem tất cả sản phẩm</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function updatePriceValue(value) {
+            document.getElementById('priceValue').textContent = new Intl.NumberFormat('vi-VN').format(value) + ' đ';
+        }
+    </script>
+}

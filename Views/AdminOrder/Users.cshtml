@@ -1,0 +1,70 @@
+@model IEnumerable<cuahanggiay.Models.User>
+@{
+    ViewData["Title"] = "Quản lý Tài Khoản";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-primary fw-bold">Quản Lý & Phân Quyền</h2>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped mb-0 align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="text-center">ID</th>
+                        <th>Tên Khách Hàng</th>
+                        <th>Email / Tài khoản</th>
+                        <th class="text-center">Quyền Hiện Tại</th>
+                        <th class="text-center">Cấp Quyền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var u in Model)
+                        {
+                            <tr>
+                                <td class="text-center fw-bold">@u.Id</td>
+                                <td class="fw-bold">@(u.FullName ?? "Chưa cập nhật")</td>
+                                <td>@u.Email</td>
+                                <td class="text-center">
+                                    @if (u.Role == "Admin")
+                                    {
+                                        <span class="badge bg-danger"><i class="fas fa-user-shield me-1"></i> Admin</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary"><i class="fas fa-user me-1"></i> Khách hàng</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <form asp-action="ChangeRole" method="post" class="d-flex justify-content-center gap-2">
+                                        <input type="hidden" name="id" value="@u.Id" />
+                                        
+                                        <select name="role" class="form-select form-select-sm fw-bold" style="width: 150px;">
+                                            <option value="Customer"
+                                                    selected="@(u.Role == "Customer" || string.IsNullOrEmpty(u.Role))">Khách hàng
+                                            </option>
+                                            <option value="Admin" selected="@(u.Role == "Admin")">Admin</option>
+                                        </select>
+                                        
+                                        <button type="submit" class="btn btn-sm btn-primary fw-bold">Lưu</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">Không tìm thấy tài khoản nào.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,105 @@
+@model cuahanggiay.Models.Shoe
+@{
+    ViewData["Title"] = "Cập Nhật Sản Phẩm";
+    // Giả định bạn đang dùng Layout Admin, nếu tên layout khác thì sửa lại nhé
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid mt-4 mb-5">
+    <h2 class="text-primary mb-4 fw-bold">
+        <i class="fas fa-edit me-2"></i>Cập Nhật Sản Phẩm: <span class="text-dark">@Model.Name</span>
+    </h2>
+
+    <div class="card shadow border-0 rounded-3">
+        <div class="card-body p-4 p-md-5">
+            <form asp-action="EditShoe" method="post" enctype="multipart/form-data">
+                
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="BrandId" />
+                <input type="hidden" asp-for="OldPrice" />
+                <input type="hidden" asp-for="IsFeatured" />
+                <input type="hidden" asp-for="Daban" />
+                <input type="hidden" asp-for="Rating" />
+                <input type="hidden" asp-for="ImageUrl" />
+
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label asp-for="Name" class="form-label fw-bold">Tên giày <span
+                            class="text-danger">*</span></label>
+                            <input asp-for="Name" class="form-control" placeholder="Nhập tên sản phẩm..." required />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Price" class="form-label fw-bold">Giá bán (VNĐ) <span
+                                class="text-danger">*</span></label>
+                                <input asp-for="Price" type="number" class="form-control" required />
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Tonkho" class="form-label fw-bold">Số lượng tồn kho <span
+                                    class="text-danger">*</span></label>
+                                    <input asp-for="Tonkho" type="number" class="form-control" required />
+                                    <span asp-validation-for="Tonkho" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label asp-for="CategoryId" class="form-label fw-bold">Danh mục <span
+                                        class="text-danger">*</span></label>
+                                        <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories" required>
+                                            <option value="">-- Chọn danh mục --</option>
+                                        </select>
+                                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <label class="form-label fw-bold text-primary">Hình ảnh sản phẩm (Upload từ máy tính)</label>
+                                        <input type="file" name="ImageFile" class="form-control border-primary shadow-sm"
+                                               accept="image/*" />
+                        
+                                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                                        {
+                                            <div class="mt-3 p-3 bg-light rounded border">
+                                                <small class="text-muted fw-bold d-block mb-2">Ảnh hiện tại đang dùng:</small>
+                                                <img src="@Url.Content(Model.ImageUrl)"
+                                                     onerror="this.onerror=null;this.src='/images/no-image.png';"
+                                                     style="width: 120px; height: 120px; object-fit: cover;"
+                                                     class="rounded shadow-sm border" />
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 mb-4">
+                                        <label asp-for="Description" class="form-label fw-bold">Mô tả sản phẩm</label>
+                                        <textarea asp-for="Description" class="form-control" rows="5"
+                                                  placeholder="Nhập mô tả chi tiết cho sản phẩm..."></textarea>
+                                        <span asp-validation-for="Description" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-3 mt-2">
+                                    <button type="submit" class="btn btn-primary px-4 fw-bold">
+                                        <i class="fas fa-save me-2"></i>Lưu Thay Đổi
+                                    </button>
+                                    <a asp-action="Shoes" class="btn btn-secondary px-4 fw-bold">
+                                        <i class="fas fa-times me-2"></i>Hủy
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                @section Scripts {
+                    @{
+                        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+                    }
+                }

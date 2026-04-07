@@ -1,0 +1,13 @@
+@model cuahanggiay.Models.ContactViewModel
+@{
+    ViewData["Title"] = "Cảm ơn";
+    Layout = "_Layout";
+}
+
+<section class="py-5">
+    <div class="container text-center">
+        <h2>Cảm ơn bạn, @Model.Name!</h2>
+        <p>Chúng tôi đã nhận được nội dung liên hệ của bạn và sẽ phản hồi qua email <strong>@Model.Email</strong> trong thời gian sớm nhất.</p>
+        <a asp-action="Index" asp-controller="Home" class="btn btn-secondary mt-3">Quay lại trang chủ</a>
+    </div>
+</section>

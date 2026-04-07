@@ -1,0 +1,59 @@
+@model IEnumerable<cuahanggiay.Models.Shoe>
+@{
+    ViewData["Title"] = "Quản lý Sản phẩm";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-primary fw-bold">Danh sách Sản phẩm</h2>
+    <a asp-action="CreateShoe" class="btn btn-success"><i class="bi bi-plus-circle"></i> Thêm mới sản phẩm</a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<div class="card shadow">
+    <div class="card-body">
+        <table class="table table-hover table-bordered align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Hình ảnh</th>
+                    <th>Tên giày</th>
+                    <th>Danh mục</th>
+                    <th>Giá bán</th>
+                    <th>Tồn kho</th>
+                    <th class="text-center">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>
+                            <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/no-img.png" : item.ImageUrl)"
+                                 alt="@item.Name"
+                                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;" />
+                        </td>
+                        <td class="fw-bold">@item.Name</td>
+                        <td>@(item.Category?.Name ?? "N/A")</td>
+                        <td class="text-danger fw-bold">@item.Price.ToString("N0") đ</td>
+                        <td>@item.Tonkho</td>
+                        <td class="text-center">
+                            <a asp-action="EditShoe" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
+                                Sửa
+                            </a>
+                            <form asp-action="DeleteShoe" asp-route-id="@item.Id" method="post" class="d-inline"
+                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?');">
+                                <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

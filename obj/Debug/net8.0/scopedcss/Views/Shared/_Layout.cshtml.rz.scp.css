@@ -1,48 +1,93 @@
-/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand[b-aqyoc4az0i] {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
-}
-
+/* 1. THIẾT LẬP CƠ BẢN CHO TOÀN BỘ TRANG */
 a[b-aqyoc4az0i] {
-  color: #0077cc;
+  color: var(--primary);
+  /* Dùng màu đỏ chủ đạo từ home.css */
+  text-decoration: none;
+  transition: 0.3s;
 }
 
+a:hover[b-aqyoc4az0i] {
+  color: var(--primary-dark);
+  text-decoration: none;
+}
+
+/* 2. NÚT BẤM (BUTTONS) */
 .btn-primary[b-aqyoc4az0i] {
   color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 8px 20px;
 }
 
-.nav-pills .nav-link.active[b-aqyoc4az0i], .nav-pills .show > .nav-link[b-aqyoc4az0i] {
+.btn-primary:hover[b-aqyoc4az0i] {
+  background-color: var(--primary-dark) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
+}
+
+/* 3. ĐỊNH DẠNG NAV-PILLS (NẾU DÙNG TRONG ADMIN/TABS) */
+.nav-pills .nav-link.active[b-aqyoc4az0i],
+.nav-pills .show>.nav-link[b-aqyoc4az0i] {
   color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+  background-color: var(--primary);
+  border-color: var(--primary);
 }
 
+/* 4. CÁC LỚP TIỆN ÍCH (UTILITIES) */
 .border-top[b-aqyoc4az0i] {
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid var(--border);
 }
+
 .border-bottom[b-aqyoc4az0i] {
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid var(--border);
 }
 
 .box-shadow[b-aqyoc4az0i] {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
-button.accept-policy[b-aqyoc4az0i] {
-  font-size: 1rem;
-  line-height: inherit;
+/* 5. PHẦN GIỎ HÀNG (SHOPPING CART) - ĐÃ TỐI ƯU */
+.cart-item[b-aqyoc4az0i] {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  position: relative;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: 0.3s;
 }
 
-.footer[b-aqyoc4az0i] {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
+.cart-item:hover[b-aqyoc4az0i] {
+  background: rgba(255, 255, 255, 0.1);
 }
+
+.cart-item i[b-aqyoc4az0i] {
+  font-size: 24px;
+  /* Kích thước icon vừa phải, không bị quá to 50px */
+  color: white;
+}
+
+/* SỐ LƯỢNG TRÊN ICON GIỎ HÀNG (BADGE) */
+#cart-count[b-aqyoc4az0i] {
+  background: var(--primary);
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 2px;
+  right: 5px;
+  border: 2px solid var(--secondary);
+  /* Tạo viền để tách biệt với nền navbar */
+}
+
+/* 6. SỬA LỖI ĐOẠN URL DƯ THỪA Ở CUỐI */
+/* Các dòng url(...) cũ bạn để ở cuối là sai cú pháp CSS nên mình đã loại bỏ */

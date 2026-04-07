@@ -1,0 +1,80 @@
+@{
+    ViewData["Title"] = "Tin Tức";
+    Layout = "_Layout";
+}
+
+<div class="container my-5">
+
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Tin tức</li>
+        </ol>
+    </nav>
+
+    <h1 class="page-title text-center mb-5">TIN TỨC MỚI NHẤT</h1>
+
+    <div class="row">
+        <h1 class="page-title">TIN TỨC</h1>
+
+        <div class="news-grid">
+            <article class="news-card">
+                <img src="https://via.placeholder.com/200x150" alt="Phân biệt giày LV">
+                <div class="news-content">
+                    <h3 class="news-title"><a href="#">Phân Biệt Giày LV Trainer Thật Giả: Bí Quyết T...</a></h3>
+                    <span class="news-date text-muted"><small>04/03/2025</small></span>
+                    <p class="news-excerpt">Bạn đam mê giày Louis Vuitton Trainer nhưng lo lắng mua phải hàng nhái, hàng
+                        kém chất lượng? Vua Giày Hiệu sẽ giúp bạn phân biệt giày lv trainer thật giả một cách dễ dàng và
+                        chính xác nhất...</p>
+                    <a href="#" class="btn btn-sm btn-outline-danger">Xem thêm</a>
+                </div>
+            </article>
+
+            <article class="news-card">
+                <img src="https://via.placeholder.com/200x150" alt="Happy Women's Day">
+                <div class="news-content">
+                    <h3 class="news-title"><a href="#">HAPPY WOMEN'S DAY 8/3 MƯA ƯU ĐÃI – ĐẠI ...</a></h3>
+                    <span class="news-date text-muted"><small>04/03/2025</small></span>
+                    <p class="news-excerpt">Ngày Quốc tế Phụ nữ 8/3 đang đến gần, và Vua Giày Hiệu mang đến chương trình
+                        đặc biệt “HAPPY WOMEN’S DAY 8/3 MƯA ƯU ĐÃI – ĐẠI TIỆC GIẢM GIÁ” với hàng loạt ưu đãi hấp dẫn...
+                    </p>
+                    <a href="#" class="btn btn-sm btn-outline-danger">Xem thêm</a>
+                </div>
+            </article>
+
+            <article class="news-card">
+                <img src="https://via.placeholder.com/200x150" alt="Giày Jordan hot">
+                <div class="news-content">
+                    <h3 class="news-title"><a href="#">Giày Jordan hot nhất hiện nay</a></h3>
+                    <span class="news-date text-muted"><small>21/02/2025</small></span>
+                    <p class="news-excerpt">Khám phá các mẫu giày Jordan hot nhất hiện nay luôn là chủ đề được giới trẻ
+                        quan tâm, đặc biệt là những tín đồ đam mê sneaker. Dòng giày Jordan không chỉ đơn thuần là một
+                        sản phẩm...</p>
+                    <a href="#" class="btn btn-sm btn-outline-danger">Xem thêm</a>
+                </div>
+            </article>
+
+            <article class="news-card">
+                <img src="https://via.placeholder.com/200x150" alt="Giày Jordan Secondhand">
+                <div class="news-content">
+                    <h3 class="news-title"><a href="#">Giày Jordan Secondhand đẹp & giá tốt</a></h3>
+                    <span class="news-date text-muted"><small>21/02/2025</small></span>
+                    <p class="news-excerpt">Giày Jordan secondhand đang trở thành một trào lưu ngày càng phổ biến trong
+                        giới trẻ, đặc biệt là những người đam mê sneaker. Không chỉ mang giá trị sưu tầm, giày Jordan
+                        còn là biểu tượng thời trang...</p>
+                    <a href="#" class="btn btn-sm btn-outline-danger">Xem thêm</a>
+                </div>
+            </article>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .news-card { border: 1px solid #eee; padding: 15px; border-radius: 8px; transition: transform 0.2s; }
+        .news-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .news-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 4px; margin-bottom: 15px; }
+    </style>
+}

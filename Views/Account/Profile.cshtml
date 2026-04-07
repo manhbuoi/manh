@@ -1,0 +1,124 @@
+@model cuahanggiay.ViewModels.UserProfileViewModel
+@{
+    ViewData["Title"] = "Hồ sơ của tôi - Vua Giày Hiệu";
+}
+
+<link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+
+<section class="auth-banner">
+    <div class="container">
+        <div class="banner-content">
+            <h1>Hồ Sơ Khách Hàng</h1>
+            <p>Quản lý thông tin cá nhân và bảo mật tài khoản</p>
+        </div>
+    </div>
+</section>
+
+<section class="breadcrumb-section">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Hồ sơ</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="auth-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <div class="auth-icon">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <h3 class="auth-title">Tài khoản của bạn</h3>
+                        <p class="auth-subtitle">Cập nhật tên, email và mật khẩu nhanh chóng.</p>
+                    </div>
+
+                    <div class="auth-body">
+                        <partial name="_ValidationScriptsPartial" />
+                        <form asp-action="Profile" method="post" class="auth-form" novalidate>
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+
+                            <div class="form-group">
+                                <label asp-for="FullName" class="form-label">
+                                    <i class="fas fa-user"></i> Họ và tên <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="FullName" class="form-control" placeholder="Họ và tên" />
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Email" class="form-label">
+                                    <i class="fas fa-envelope"></i> Email <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="Email" type="email" class="form-control" placeholder="Email" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <hr />
+                            <p class="fw-bold">Đổi mật khẩu (tùy chọn)</p>
+
+                            <div class="form-group">
+                                <label asp-for="CurrentPassword" class="form-label">
+                                    <i class="fas fa-key"></i> Mật khẩu hiện tại
+                                </label>
+                                <input asp-for="CurrentPassword" type="password" class="form-control" placeholder="Mật khẩu hiện tại" />
+                                <span asp-validation-for="CurrentPassword" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="NewPassword" class="form-label">
+                                    <i class="fas fa-lock"></i> Mật khẩu mới
+                                </label>
+                                <input asp-for="NewPassword" type="password" class="form-control" placeholder="Mật khẩu mới" />
+                                <span asp-validation-for="NewPassword" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="ConfirmNewPassword" class="form-label">
+                                    <i class="fas fa-lock"></i> Xác nhận mật khẩu mới
+                                </label>
+                                <input asp-for="ConfirmNewPassword" type="password" class="form-control" placeholder="Xác nhận mật khẩu mới" />
+                                <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary btn-auth">
+                                    <i class="fas fa-save"></i> Lưu thay đổi
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="auth-benefits mt-4">
+                    <h4 class="benefits-title">
+                        <i class="fas fa-rocket"></i> Tính năng tài khoản
+                    </h4>
+                    <div class="benefits-list">
+                        <div class="benefit-item">
+                            <i class="fas fa-box"></i>
+                            <span>Theo dõi lịch sử đơn hàng nhanh chóng</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-heart"></i>
+                            <span>Ưu đãi riêng và mã giảm giá dành cho thành viên</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Bảo mật cao với cập nhật mật khẩu</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-headset"></i>
+                            <span>Hỗ trợ khách hàng 24/7</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

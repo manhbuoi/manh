@@ -1,144 +1,223 @@
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial, sans-serif;
 }
 
 body {
-    margin: 0;
-    background: #f5f5f5;
+    background: #f4f4f4;
 }
 
-/* ===== HEADER ===== */
-header {
-    background: #fff;
-    border-bottom: 1px solid #ddd;
+.container {
+    width: 1200px;
+    margin: auto;
 }
 
-.topbar {
+/* HEADER */
+.header {
+    background: #73a1c6;
+    color: white;
+    padding: 15px 0;
+}
+
+.header-flex {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 12px 5%;
-    gap: 20px;
+    align-items: center;
 }
 
 .logo {
-    font-size: 28px;
+    font-size: 22px;
     font-weight: bold;
 }
 
-.search {
-    flex: 1;
+.logo span {
+    color: #e53935;
+}
+
+.menu a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+}
+
+.menu a:hover {
+    color: #e53935;
+}
+
+/* BREADCRUMB */
+.breadcrumb {
+    background: #eee;
+    padding: 15px 0;
+    margin-bottom: 20px;
+}
+
+/* MAIN */
+.main {
     display: flex;
+    gap: 30px;
 }
 
-.search input {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px 0 0 4px;
+/* SIDEBAR */
+.sidebar {
+    width: 250px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
 }
 
-.search button {
-    padding: 10px 16px;
-    border: none;
-    background: #e53935;
-    color: #fff;
-    border-radius: 0 4px 4px 0;
-    cursor: pointer;
+.sidebar h3 {
+    margin-bottom: 10px;
+    font-size: 16px;
 }
 
-.contact {
-    display: flex;
-    gap: 20px;
-    font-size: 14px;
-}
-
-/* ===== MENU ===== */
-nav {
-    background: #222;
-}
-
-nav ul {
+.sidebar ul {
     list-style: none;
-    margin: 0;
-    padding: 0 5%;
-    display: flex;
+    margin-top: 10px;
 }
 
-nav li {
-    padding: 14px 18px;
-    color: #fff;
-    cursor: pointer;
+.sidebar ul li {
+    margin-bottom: 8px;
 }
 
-nav li.active,
-nav li:hover {
+.sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+.sidebar ul li a:hover {
+    color: #e53935;
+}
+
+.btn {
+    margin-top: 10px;
+    padding: 8px 15px;
     background: #e53935;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
-/* ===== MAIN ===== */
-main {
-    padding: 40px 5%;
-}
-
-h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    letter-spacing: 2px;
-}
-
+/* PRODUCTS */
 .products {
+    flex: 1;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
 }
 
-.product {
-    background: #fff;
-    padding: 14px;
-    border-radius: 6px;
+.product-card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
     position: relative;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: 0.3s;
 }
 
-.product img {
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.product-card img {
     width: 100%;
-    border-radius: 6px;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 8px;
 }
 
-.sale {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    background: #ffd6cc;
-    padding: 10px;
-    border-radius: 50%;
-    font-size: 14px;
-}
-
-.product h3 {
+.product-card h4 {
+    margin: 10px 0;
     font-size: 15px;
-    margin: 12px 0;
-    min-height: 40px;
 }
 
-.price {
-    color: #2e7d32;
+.price .new {
+    color: #e53935;
     font-weight: bold;
 }
 
-.old {
+.price .old {
     text-decoration: line-through;
     color: #888;
     margin-left: 8px;
 }
 
-/* ===== FOOTER ===== */
-footer {
-    background: #222;
-    color: #ccc;
-    text-align: center;
-    padding: 20px;
-    margin-top: 40px;
+.sale {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #e53935;
+    color: white;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 5px;
+}
+
+@media(max-width:1024px) {
+    .container {
+        width: 95%;
+    }
+
+    .products {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width:768px) {
+    .main {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+
+    .products {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+.banner-image-marquee {
+    overflow: hidden; 
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    padding: 15px 0;
+}
+
+/* Khung chứa các ảnh bên trong: Sẽ thực hiện chuyển động */
+.marquee-content {
+    display: flex; /* Xếp các ảnh nằm ngang */
+    width: 200%; /* Gấp đôi chiều ngang để chứa 2 bộ ảnh nối đuôi */
+    animation: marquee-scroll 10s linear infinite; /* Gọi hiệu ứng: chạy trong 10 giây, đều, vô hạn */
+}
+
+/* Từng khung nhỏ chứa 1 ảnh */
+.marquee-item {
+    width: calc(100% / 6); /* Chia đều: 6 ảnh (3 thật + 3 nối đuôi) */
+    padding: 0 10px; /* Tạo khoảng cách giữa các ảnh */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Định dạng ảnh bên trong */
+.marquee-item img {
+    height: 120px; /* Chiều cao ảnh (tùy chỉnh cho vừa) */
+    width: auto; /* Chiều ngang tự động theo tỉ lệ */
+    object-fit: cover; /* Cắt ảnh cho vừa khung */
+}
+
+/* ĐỊNH NGHĨA CHUYỂN ĐỘNG (KEYFRAMES) */
+@keyframes marquee-scroll {
+    0% {
+        transform: translateX(0); /* Điểm bắt đầu */
+    }
+    100% {
+        transform: translateX(-50%); /* Điểm kết thúc: Chạy hết 1 bộ ảnh đầu tiên */
+    }
 }

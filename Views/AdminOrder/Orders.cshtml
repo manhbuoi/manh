@@ -1,0 +1,83 @@
+@model IEnumerable<cuahanggiay.Models.Order>
+@{
+    ViewData["Title"] = "Quản lý Đơn Hàng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-primary fw-bold">Danh sách Đơn Hàng</h2>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped mb-0 align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="text-center">Mã Đơn</th>
+                        <th>Khách hàng</th>
+                        <th>Ngày đặt</th>
+                        <th>Trạng thái</th>
+                        <th class="text-center">Thao tác duyệt đơn</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var order in Model)
+                        {
+                            <tr>
+                                <td class="text-center fw-bold">#@order.Id</td>
+                                <td>
+                                    <div class="fw-bold">@(order.User?.FullName ?? "Khách Vãng Lai")</div>
+                                    <small class="text-muted">@(order.User?.Email ?? "")</small>
+                                </td>
+                                <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    @if (order.Status == "Chờ xử lý")
+                                    {
+                                        <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Chờ xử lý</span>
+                                    }
+                                    else if (order.Status == "Đã duyệt" || order.Status == "Đang giao")
+                                    {
+                                        <span class="badge bg-info text-dark"><i class="fas fa-truck me-1"></i>Đang giao</span>
+                                    }
+                                    else if (order.Status == "Hoàn thành")
+                                    {
+                                        <span class="badge bg-success"><i class="fas fa-check me-1"></i>Hoàn thành</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Đã hủy</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <form asp-action="UpdateOrderStatus" method="post"
+                                          class="d-flex justify-content-center gap-2">
+                                        <input type="hidden" name="id" value="@order.Id" />
+                                        <select name="status" class="form-select form-select-sm" style="width: 140px;">
+                                            <option value="Chờ xử lý" selected="@(order.Status == "Chờ xử lý")">Chờ xử lý
+                                            </option>
+                                            <option value="Đang giao"
+                                                    selected="@(order.Status == "Đang giao" || order.Status == "Đã duyệt")">Đang
+                                                giao</option>
+                                                <option value="Hoàn thành" selected="@(order.Status == "Hoàn thành")">Hoàn thành
+                                                </option>
+                                                <option value="Đã hủy" selected="@(order.Status == "Đã hủy")">Đã hủy</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-sm btn-primary fw-bold">Cập nhật</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        } else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">Chưa có đơn hàng nào trong hệ thống.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>  

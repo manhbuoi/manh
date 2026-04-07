@@ -1,0 +1,60 @@
+@model IEnumerable<dynamic>
+@{
+    ViewData["Title"] = "Quản lý Đơn hàng";
+}
+
+<div class="container mt-4">
+    <h2>Quản lý đơn hàng (Admin)</h2>
+    
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success">@TempData["Message"]</div>
+    }
+
+    <table class="table table-bordered table-striped mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Mã ĐH</th>
+                <th>Khách hàng</th>
+                <th>Ngày đặt</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.CustomerName</td>
+                    <td>@item.Date</td>
+                    <td class="text-danger fw-bold">@item.Total.ToString("N0") ₫</td>
+                    <td>
+                        @if (item.Status == "Chờ xác nhận")
+                        {
+                            <span class="badge bg-warning text-dark">@item.Status</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">@item.Status</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.Status == "Chờ xác nhận")
+                        {
+                            <form asp-action="ConfirmOrder" method="post" style="display:inline;">
+                                <input type="hidden" name="orderId" value="@item.Id" />
+                                <button type="submit" class="btn btn-sm btn-primary">Xác nhận đơn</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <button class="btn btn-sm btn-secondary" disabled>Đã xử lý</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

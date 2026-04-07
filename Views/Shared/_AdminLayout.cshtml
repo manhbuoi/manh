@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Vua Giày Hiệu</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        body { 
+            background-color: #f4f6f9; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .admin-sidebar { 
+            min-height: 100vh; 
+            background-color: #343a40; 
+            color: white; 
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        .admin-sidebar h4 {
+            background-color: #23272b;
+            padding: 20px 0;
+        }
+        .admin-sidebar a { 
+            color: #c2c7d0; 
+            text-decoration: none; 
+            padding: 15px 20px; 
+            display: block; 
+            border-bottom: 1px solid #4f5962; 
+            font-weight: 500;
+        }
+        .admin-sidebar a:hover, .admin-sidebar a.active { 
+            background-color: #dc3545; /* Màu đỏ cho hợp với Vua Giày Hiệu */
+            color: white; 
+            transition: 0.3s;
+        }
+        .admin-main-content { 
+            margin-left: 250px; /* Chừa chỗ cho sidebar */
+            padding: 30px; 
+            width: calc(100% - 250px); 
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <div class="admin-sidebar shadow">
+            <h4 class="text-center m-0 fw-bold">
+                <i class="fas fa-user-shield text-danger me-2"></i>ADMIN PANEL
+            </h4>
+            <div class="mt-3">
+                <a href="/AdminOrder/Shoes"><i class="fas fa-shoe-prints me-2"></i> Quản lý Sản Phẩm</a>
+                <a href="/AdminOrder/Orders"><i class="fas fa-shopping-cart me-2"></i> Quản lý Đơn Hàng</a>
+                <a href="/AdminOrder/Users"><i class="fas fa-users me-2"></i> Quản lý Tài Khoản</a>
+                
+                <a href="/" class="text-warning mt-5" style="border-top: 2px solid #4f5962;">
+                    <i class="fas fa-home me-2"></i> Về Trang chủ Web
+                </a>
+            </div>
+        </div>
+
+        <div class="admin-main-content">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                    <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
