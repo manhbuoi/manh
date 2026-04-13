@@ -1,0 +1,74 @@
+@model IEnumerable<cuahanggiay.Models.Order>
+@{
+    ViewData["Title"] = "Bảng điều khiển Giao Hàng";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="fw-bold"><i class="fas fa-motorcycle text-info me-2"></i>Đơn hàng được phân công</h2>
+            <p class="text-muted">Quản lý và cập nhật trạng thái các đơn hàng bạn phụ trách giao.</p>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row row-cols-1 g-4">
+            @foreach (var order in Model)
+            {
+                <div class="col">
+                    <div class="card shadow-sm border-0 h-100 table-hover">
+                        <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                            <div>
+                                <h5 class="fw-bold mb-1">Mã đơn: <span class="text-danger">#@order.OrderCode</span></h5>
+                                <div class="text-muted mb-2"><i class="fas fa-calendar-alt me-1"></i>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</div>
+                                
+                                <div class="mb-1"><i class="fas fa-user me-2 text-secondary"></i><strong>Người nhận:</strong> @order.ReceiverName</div>
+                                <div class="mb-1"><i class="fas fa-phone me-2 text-secondary"></i><strong>Điện thoại:</strong> @order.ReceiverPhone</div>
+                                <div class="mb-1"><i class="fas fa-map-marker-alt me-2 text-danger"></i><strong>Địa chỉ:</strong> @order.ShippingAddress</div>
+                                
+                                @if(!string.IsNullOrEmpty(order.Notes))
+                                {
+                                    <div class="mt-2 p-2 bg-light rounded bg-opacity-50 border"><i class="fas fa-sticky-note me-2 text-warning"></i><em>@order.Notes</em></div>
+                                }
+                            </div>
+                            
+                            <div class="d-flex flex-column align-items-md-end gap-3" style="min-width: 200px;">
+                                <div class="fs-5 fw-bold text-danger">@order.TotalAmount.ToString("N0") ₫</div>
+                                <div class="badge bg-light text-dark border p-2 w-100 text-center"><i class="fas fa-wallet me-1"></i> PT: @order.PaymentMethod</div>
+                                
+                                <form asp-action="UpdateStatus" method="post" class="w-100">
+                                    <input type="hidden" name="id" value="@order.Id" />
+                                    <div class="input-group">
+                                        <select name="status" class="form-select border-primary" style="min-width: 130px;">
+                                            <option value="Đang giao" selected="@(order.Status == "Đang giao")">Đang giao</option>
+                                            <option value="Hoàn thành" selected="@(order.Status == "Hoàn thành")">Giao thành công</option>
+                                            <option value="Đã hủy" selected="@(order.Status == "Đã hủy")">Giao thất bại</option>
+                                        </select>
+                                        <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> LƯU</button>
+                                    </div>
+                                </form>
+                                @if (order.Status == "Hoàn thành")
+                                {
+                                    <span class="badge bg-success p-2 w-100"><i class="fas fa-check-circle me-1"></i>Đã giao xong</span>
+                                }
+                                else if (order.Status == "Đã hủy" || order.Status == "Giao thất bại")
+                                {
+                                    <span class="badge bg-danger p-2 w-100"><i class="fas fa-times me-1"></i>Giao thất bại</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info py-4 text-center">
+            <i class="fas fa-box-open fs-1 text-muted mb-3 d-block"></i>
+            <h5 class="fw-bold">Bạn chưa có đơn hàng nào cần giao</h5>
+            <p class="mb-0">Hãy nghỉ ngơi và chờ quản lý phân công đơn hàng mới nhé.</p>
+        </div>
+    }
+</div>

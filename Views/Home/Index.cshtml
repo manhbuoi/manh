@@ -1,4 +1,4 @@
-﻿@model List<cuahanggiay.Models.Shoe>
+@model List<cuahanggiay.Models.Shoe>
 @{
     ViewData["Title"] = "Trang Chủ - Vua Giày Hiệu";
 }
@@ -107,26 +107,50 @@
     }
     .heart-icon:hover { color: #ef4444; }
 
-    /* Hình ảnh */
-    .img-wrapper-premium {
-        height: 220px;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 35px 20px 15px 20px;
-        background-color: #fff;
+    <style>
+    /* KHUNG CHỨA ẢNH ĐỘNG SẢN PHẨM */
+    .product-slider-container {
         position: relative;
+        width: 100%;
+        height: 100%;
     }
-    .img-fixed-premium {
-        max-height: 100%;
-        max-width: 100%;
-        object-fit: contain;
-        transition: transform 0.5s ease;
+    .product-img-front {
+        position: relative;
+        z-index: 2;
+        width: 100%; height: 100%; object-fit: cover;
+        animation: crossFade 4s infinite alternate;
     }
-    .premium-card:hover .img-fixed-premium {
-        transform: scale(1.1) rotate(-2deg);
+    .product-img-back {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
+        z-index: 1;
     }
+
+    /* KHUNG CHỨA ẢNH ĐỘNG BANNER */
+    .banner-container .banner-front {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        z-index: 2;
+        animation: crossFadeBanner 6s infinite alternate;
+    }
+    .banner-container .banner-back {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        z-index: 1;
+    }
+
+    /* ANIMATION ĐỔI ẢNH CHUYÊN NGHIỆP */
+    @@keyframes crossFade {
+        0%, 40% { opacity: 1; }
+        60%, 100% { opacity: 0; }
+    }
+    @@keyframes crossFadeBanner {
+        0%, 45% { opacity: 1; }
+        55%, 100% { opacity: 0; }
+    }
+
+    /* Tắt tạm các CSS cũ không dùng đến */
+    /* .img-wrapper-premium, .img-fixed-premium được thay bằng .card-img-wrapper trong site.css */
 
     /* Nội dung */
     .card-body-premium {
@@ -202,34 +226,18 @@
         border-radius: 3px;
     }
 
-    /* Nút bấm */
-    .btn-premium {
-        background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
-        color: white !important;
-        font-weight: 800;
-        border-radius: 12px;
-        border: none;
-        padding: 12px 0;
-        width: 100%;
-        font-size: 0.95rem;
-        text-align: center;
-        transition: all 0.3s;
-        margin-top: auto;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 8px;
-    }
-    .btn-premium:hover {
-        background: linear-gradient(135deg, #312e81 0%, #1e3a8a 100%);
-        box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
-    }
+    /* Nút bấm cũ thay bằng btn-cta-primary */
 </style>
 
-@* --- 1. BANNER SECTION (GIỮ NGUYÊN) --- *@
-<div class="banner-section position-relative d-flex align-items-center justify-content-center" style="min-height: 450px; 
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/1.png') center/cover no-repeat;">
-    <div class="container text-center text-white position-relative z-1">
+@* --- 1. BANNER SECTION (ĐÃ THỆM HIỆU ỨNG ĐỘNG) --- *@
+<div class="banner-section position-relative d-flex align-items-center justify-content-center overflow-hidden" style="min-height: 450px; background-color: #000;">
+    <div class="position-absolute top-0 start-0 w-100 h-100 banner-container z-0">
+        <img src="https://images.unsplash.com/photo-1556906781-9a412961c28c?q=80&w=2000" alt="Store Banner 1" class="banner-front" style="object-fit: cover; width: 100%; height: 100%;">
+        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2000" alt="Store Banner 2" class="banner-back" style="object-fit: cover; width: 100%; height: 100%;">
+    </div>
+    <!-- Lớp phủ tốn mờ -->
+    <div class="position-absolute top-0 start-0 w-100 h-100 z-1" style="background-color: rgba(0,0,0,0.6);"></div>
+    <div class="container text-center text-white position-relative z-2">
         <h1 class="display-4 fw-bold mb-3">Giày Hiệu Chất Lượng Cao</h1>
         <p class="fs-5 mb-4">Khám phá bộ sưu tập giày hàng hiệu của chúng tôi</p>
         <a class="btn btn-outline-light btn-lg px-5 py-2 rounded-0"
@@ -261,7 +269,7 @@
                     foreach (var shoe in Model.Take(10))
                     {
                         <div class="fs-item">
-                            <div class="premium-card">
+                            <div class="product-card">
                                 <div class="card-top-bar">
                                     <div>
                                         <span class="badge-brand">@(shoe.Brand?.Name ?? "Brand")</span>
@@ -271,8 +279,9 @@
                                 </div>
 
                                 <a asp-controller="Shoes" asp-action="Details" asp-route-id="@shoe.Id">
-                                    <div class="img-wrapper-premium">
-                                        <img src="@Url.Content(string.IsNullOrEmpty(shoe.ImageUrl) ? "~/images/no-image.png" : shoe.ImageUrl)" onerror="this.onerror=null;this.src='/images/no-image.png';" alt="@shoe.Name" class="img-fixed-premium" />
+                                    <div class="card-img-wrapper product-slider-container group-hover-zoom overflow-hidden">
+                                        <img src="@Url.Content(string.IsNullOrEmpty(shoe.ImageUrl) ? "~/images/no-image.png" : shoe.ImageUrl)" onerror="this.onerror=null;this.src='/images/no-image.png';" alt="@shoe.Name" class="product-img-front" />
+                                        <img src="@Url.Content(string.IsNullOrEmpty(shoe.ImageUrl) ? "~/images/no-image.png" : shoe.ImageUrl)" onerror="this.onerror=null;this.src='/images/no-image.png';" alt="@shoe.Name" class="product-img-back" style="transform: scaleX(-1);" />
                                     </div>
                                 </a>
 
@@ -303,9 +312,9 @@
                                     <div class="stock-text">Sắp cháy hàng (Đã bán @shoe.Daban)</div>
                                     <div class="progress-bg"><div class="progress-fill" style="width: @percent%;"></div></div>
 
-                                    <button class="btn-premium" onclick="@(User.Identity != null && User.Identity.IsAuthenticated ? $"addToCart({shoe.Id})" : "requireLogin()")">
-                                        MUA NGAY <i class="fas fa-shopping-cart ms-1"></i>
-                                    </button>
+                                    <a asp-controller="Shoes" asp-action="Details" asp-route-id="@shoe.Id" class="btn btn-outline-dark fw-bold rounded-pill p-2 w-100 mt-3 d-flex justify-content-center align-items-center">
+                                        <i class="fas fa-eye me-2"></i>XEM CHI TIẾT
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -330,7 +339,7 @@
                 foreach (var shoe in Model)
                 {
                     <div class="col-lg-3 col-md-4 col-sm-6">
-                        <div class="premium-card">
+                        <div class="product-card">
                             <div class="card-top-bar">
                                 <div>
                                     <span class="badge-brand">@(shoe.Brand?.Name ?? "Brand")</span>
@@ -339,8 +348,9 @@
                             </div>
 
                             <a asp-controller="Shoes" asp-action="Details" asp-route-id="@shoe.Id">
-                                <div class="img-wrapper-premium">
-                                    <img src="@Url.Content(string.IsNullOrEmpty(shoe.ImageUrl) ? "~/images/no-image.png" : shoe.ImageUrl)" onerror="this.onerror=null;this.src='/images/no-image.png';" alt="@shoe.Name" class="img-fixed-premium" />
+                                <div class="card-img-wrapper product-slider-container group-hover-zoom overflow-hidden">
+                                    <img src="@Url.Content(string.IsNullOrEmpty(shoe.ImageUrl) ? "~/images/no-image.png" : shoe.ImageUrl)" onerror="this.onerror=null;this.src='/images/no-image.png';" alt="@shoe.Name" class="product-img-front" />
+                                    <img src="@Url.Content(string.IsNullOrEmpty(shoe.ImageUrl) ? "~/images/no-image.png" : shoe.ImageUrl)" onerror="this.onerror=null;this.src='/images/no-image.png';" alt="@shoe.Name" class="product-img-back" style="transform: scaleX(-1);" />
                                 </div>
                             </a>
 
@@ -362,9 +372,9 @@
                                     <div class="swatch" style="background-color: #fbbf24;"></div>
                                 </div>
 
-                                <button class="btn-premium" onclick="@(User.Identity != null && User.Identity.IsAuthenticated ? $"addToCart({shoe.Id})" : "requireLogin()")">
-                                    MUA NGAY <i class="fas fa-shopping-cart ms-1"></i>
-                                </button>
+                                <a asp-controller="Shoes" asp-action="Details" asp-route-id="@shoe.Id" class="btn btn-outline-dark fw-bold rounded-pill p-2 w-100 mt-auto d-flex justify-content-center align-items-center">
+                                    <i class="fas fa-eye me-2"></i>XEM CHI TIẾT
+                                </a>
                             </div>
                         </div>
                     </div>

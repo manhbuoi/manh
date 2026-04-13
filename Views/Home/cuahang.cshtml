@@ -2,6 +2,13 @@
 @{
     ViewData["Title"] = "Cửa Hàng - Vua Giày Hiệu";
     Layout = "_Layout";
+    var categories = ViewData["Categories"] as List<cuahanggiay.Models.Category>;
+    var brands = ViewData["Brands"] as List<cuahanggiay.Models.Brand>;
+    
+    var currentCategory = ViewData["CurrentCategory"] as int?;
+    var currentBrand = ViewData["CurrentBrand"] as int?;
+    var currentSearch = ViewData["CurrentSearch"] as string;
+    var currentSort = ViewData["CurrentSort"] as string;
 }
 
 <div class="breadcrumb-section bg-light py-2">
@@ -9,363 +16,359 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index"
-                                                   class="text-decoration-none text-dark">Trang chủ</a></li>
-                    <li class="breadcrumb-item active text-danger">Cửa hàng</li>
-                </ol>
-            </nav>
-        </div>
+                                               class="text-decoration-none text-dark">Trang chủ</a></li>
+                <li class="breadcrumb-item active text-danger">Cửa hàng</li>
+            </ol>
+        </nav>
     </div>
+</div>
 
-    <section class="products-section py-5 bg-light">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold text-dark">Sản Phẩm Nổi Bật</h2>
-                <p class="text-muted fs-5">Những mẫu giày hot nhất đang được khách hàng yêu thích</p>
-            </div>
-
-            @if (Model != null && Model.Any())
-            {
-                var groupedShoes = Model.GroupBy(s => s.Category?.Name ?? "Khác");
-                foreach (var group in groupedShoes)
-                {
-                    <div class="category-section mb-5">
-                        <h3 class="text-center mb-4 text-primary">@group.Key</h3>
-                        <div class="row g-4">
-                            @foreach (var shoe in group)
-                            {
-                                <div class="col-lg-4 col-md-6">
-                                    <div class="card h-100 shadow-sm border-0 product-card">
-                                        <div class="position-relative overflow-hidden">
-                                            <img src="@Url.Content(string.IsNullOrEmpty(shoe.ImageUrl) ? "~/images/default-shoe.jpg" : shoe.ImageUrl)"
-                                                 alt="@shoe.Name" class="card-img-top product-image"
-                                                 onerror="this.src='https://via.placeholder.com/300x250?text=@shoe.Name.Replace(" ", "+")'">
-                                        
-                                            @if (shoe.OldPrice.HasValue && shoe.OldPrice > shoe.Price)
-                                            {
-                                                <span class="badge bg-danger position-absolute top-0 start-0 m-2">
-                                                    -@Math.Round((1 - (double)shoe.Price / (double)shoe.OldPrice.Value) * 100)%
-                                                </span>
-                                            }
-                                            @if (shoe.IsFeatured)
-                                            {
-                                                <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2">
-                                                    <i class="fas fa-star me-1"></i>Nổi bật
-                                                </span>
-                                            }
-                                        </div>
-
-                                        <div class="card-body p-4">
-                                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                                <span class="badge bg-light text-muted">@(shoe.Brand?.Name ?? "N/A")</span>
-                                                <span class="badge bg-light text-muted">@(shoe.Category?.Name ?? "N/A")</span>
-                                            </div>
-
-                                            <h5 class="card-title fw-bold mb-2">@shoe.Name</h5>
-
-                                            <p class="text-muted small mb-3">@shoe.Description</p>
-
-                                            <div class="rating mb-3">
-                                                @for (int i = 1; i <= 5; i++)
-                                                {
-                                                    <i class="fas fa-star @(i <= shoe.Rating ? "text-warning" : "text-muted")"></i>
-                                                }
-                                                <small class="text-muted ms-1">(@shoe.Daban lượt bán)</small>
-                                            </div>
-
-                                            <div class="price-section mb-3">
-                                                <span class="text-danger fw-bold fs-4">@shoe.Price.ToString("#,##0") đ</span>
-                                                @if (shoe.OldPrice.HasValue)
-                                                {
-                                                    <span
-                                                        class="text-muted text-decoration-line-through ms-2">@shoe.OldPrice.Value.ToString("#,##0")
-                                                        đ</span>
-                                                    }
-                                                </div>
-
-                                                <div class="stock-status mb-3">
-                                                    @if (shoe.Tonkho > 10)
-                                                    {
-                                                        <small class="text-success"><i class="fas fa-check-circle me-1"></i>Còn hàng
-                                                            (@shoe.Tonkho)</small>
-                                                        }
-                                            else if (shoe.Tonkho > 0)
-                                                        {
-                                                            <small class="text-warning"><i class="fas fa-exclamation-triangle me-1"></i>Sắp hết hàng
-                                                                (@shoe.Tonkho)</small>
-                                                            }
-                                            else
-                                                            {
-                                                                <small class="text-danger"><i class="fas fa-times-circle me-1"></i>Hết hàng</small>
-                                                            }
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="card-footer bg-white border-0 p-4 pt-0">
-                                                        <div class="d-grid gap-2">
-                                                            <a asp-controller="Shoes" asp-action="Details" asp-route-id="@shoe.Id"
-                                                                   class="btn btn-outline-primary">
-                                                                <i class="fas fa-eye me-2"></i>Xem Chi Tiết
-                                                            </a>
-                                                            @if (shoe.Tonkho > 0)
-                                                            {
-                                                                <button class="btn btn-danger" onclick="addToCart(@shoe.Id)">
-                                                                    <i class="fas fa-cart-plus me-2"></i>Thêm Vào Giỏ
-                                                                </button>
-                                                            }
-                                                            else
-                                                            {
-                                                                <button class="btn btn-secondary" disabled>
-                                                                    <i class="fas fa-cart-plus me-2"></i>Hết Hàng
-                                                                </button>
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        }
-                                    </div>
+<section class="products-section py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar Filters -->
+            <div class="col-lg-3 mb-4">
+                <div class="card border-0 shadow-sm rounded-3 filter-sidebar">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4 border-bottom pb-2">Bộ Lọc Sản Phẩm</h5>
+                        <form method="get" action="@Url.Action("Cuahang", "Home")">
+                            
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold text-muted small text-uppercase">Tìm kiếm</label>
+                                <div class="input-group">
+                                    <input type="text" name="searchString" class="form-control bg-light border-0" placeholder="Tên sản phẩm..." value="@currentSearch">
+                                    <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
                                 </div>
-                            }
+                            </div>
 
-                            <div class="text-center mt-5">
-                                <a asp-controller="Shoes" asp-action="Index" class="btn btn-danger btn-lg px-5">
-                                    <i class="fas fa-th-large me-2"></i>Xem Tất Cả Sản Phẩm
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold text-muted small text-uppercase">Danh mục</label>
+                                <select name="categoryId" class="form-select bg-light border-0 shadow-none text-dark fw-medium" onchange="this.form.submit()">
+                                    <option value="">Tất cả danh mục</option>
+                                    @if(categories != null)
+                                    {
+                                        foreach(var c in categories) {
+                                            if (c.Id == currentCategory) {
+                                                <option value="@c.Id" selected>@c.Name</option>
+                                            } else {
+                                                <option value="@c.Id">@c.Name</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold text-muted small text-uppercase">Thương hiệu</label>
+                                <select name="brandId" class="form-select bg-light border-0 shadow-none text-dark fw-medium" onchange="this.form.submit()">
+                                    <option value="">Tất cả thương hiệu</option>
+                                    @if(brands != null)
+                                    {
+                                        foreach(var b in brands) {
+                                            if (b.Id == currentBrand) {
+                                                <option value="@b.Id" selected>@b.Name</option>
+                                            } else {
+                                                <option value="@b.Id">@b.Name</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold text-muted small text-uppercase">Sắp xếp theo</label>
+                                <select name="sortOrder" class="form-select bg-light border-0 shadow-none text-dark fw-medium" onchange="this.form.submit()">
+                                    @if (string.IsNullOrEmpty(currentSort)) { <option value="" selected>Mặc định</option> } else { <option value="">Mặc định</option> }
+                                    @if (currentSort == "price_asc") { <option value="price_asc" selected>Giá tăng dần</option> } else { <option value="price_asc">Giá tăng dần</option> }
+                                    @if (currentSort == "price_desc") { <option value="price_desc" selected>Giá giảm dần</option> } else { <option value="price_desc">Giá giảm dần</option> }
+                                    @if (currentSort == "name_asc") { <option value="name_asc" selected>Tên A-Z</option> } else { <option value="name_asc">Tên A-Z</option> }
+                                    @if (currentSort == "name_desc") { <option value="name_desc" selected>Tên Z-A</option> } else { <option value="name_desc">Tên Z-A</option> }
+                                </select>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-4 pt-2 border-top">
+                                <a href="@Url.Action("Cuahang", "Home")" class="btn btn-outline-danger fw-bold rounded-pill">
+                                    <i class="fas fa-times me-2"></i>Xóa Bộ Lọc
                                 </a>
                             </div>
-                        }
-        else
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="col-lg-9">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <h2 class="h3 fw-bold mb-0 text-dark">Tất Cả Sản Phẩm</h2>
+                    <span class="text-muted fw-medium">Hiển thị <span class="badge bg-primary rounded-pill">@Model.Count()</span> sản phẩm</span>
+                </div>
+
+                @if (Model != null && Model.Any())
+                {
+                    <div class="row g-4">
+                        @foreach (var shoe in Model)
                         {
-                            <div class="text-center py-5">
-                                <div class="alert alert-light shadow-sm border">
-                                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
-                                    <h4 class="text-muted">Không có sản phẩm nào</h4>
-                                    <p class="text-muted mb-0">Hiện tại cửa hàng chưa có sản phẩm. Vui lòng quay lại sau.</p>
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="card h-100 shadow-sm border-0 product-card">
+                                    <div class="position-relative overflow-hidden group-hover-zoom product-slider-container">
+                                        <!-- Ảnh 1: Mặt trước -->
+                                        <img src="@Url.Content(string.IsNullOrEmpty(shoe.ImageUrl) ? "~/images/default-shoe.jpg" : (shoe.ImageUrl.StartsWith("/") || shoe.ImageUrl.StartsWith("~") || shoe.ImageUrl.StartsWith("http") ? shoe.ImageUrl : "~/images/" + shoe.ImageUrl))"
+                                             alt="@shoe.Name Front" class="card-img-top product-image product-img-front"
+                                             onerror="this.src='https://via.placeholder.com/300x250?text=@shoe.Name.Replace(" ", "+")'">
+                                        <!-- Ảnh 2: Mặt nghiêng (Lật ngang tạo hiệu ứng ảnh thứ 2) -->
+                                        <img src="@Url.Content(string.IsNullOrEmpty(shoe.ImageUrl) ? "~/images/default-shoe.jpg" : (shoe.ImageUrl.StartsWith("/") || shoe.ImageUrl.StartsWith("~") || shoe.ImageUrl.StartsWith("http") ? shoe.ImageUrl : "~/images/" + shoe.ImageUrl))"
+                                             alt="@shoe.Name Back" class="card-img-top product-image product-img-back" style="transform: scaleX(-1);"
+                                             onerror="this.src='https://via.placeholder.com/300x250?text=@shoe.Name.Replace(" ", "+")'">
+                                    
+                                        @if (shoe.OldPrice.HasValue && shoe.OldPrice > shoe.Price)
+                                        {
+                                            <span class="badge bg-danger position-absolute top-0 start-0 m-2">
+                                                -@Math.Round((1 - (double)shoe.Price / (double)shoe.OldPrice.Value) * 100)%
+                                            </span>
+                                        }
+                                        @if (shoe.IsFeatured)
+                                        {
+                                            <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-3 px-2 py-1 shadow-sm rounded-pill">
+                                                <i class="fas fa-star me-1"></i>Hot
+                                            </span>
+                                        }
+                                    </div>
+
+                                    <div class="card-body p-4 d-flex flex-column">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <span class="badge bg-light text-secondary border rounded-1">@(shoe.Brand?.Name ?? "N/A")</span>
+                                            <span class="badge bg-light text-secondary border rounded-1">@(shoe.Category?.Name ?? "N/A")</span>
+                                        </div>
+
+                                        <h5 class="card-title fw-bold mb-2 text-dark product-title-clamp" title="@shoe.Name">@shoe.Name</h5>
+
+                                        <div class="rating mb-2">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <i class="fas fa-star @(i <= shoe.Rating ? "text-warning" : "text-muted")" style="font-size: 0.85rem;"></i>
+                                            }
+                                            <span class="text-muted ms-1 small">(@shoe.Daban)</span>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between align-items-center mb-3 bg-light rounded px-2 py-1 border border-light-subtle">
+                                            <small class="text-muted">
+                                                <i class="fas fa-shopping-bag text-danger me-1"></i>Đã bán: <span class="fw-bold text-dark">@shoe.Daban</span>
+                                            </small>
+                                            <small class="text-muted">
+                                                <i class="fas fa-box text-success me-1"></i>Còn lại: <span class="fw-bold text-dark">@shoe.Tonkho</span>
+                                            </small>
+                                        </div>
+
+                                        <div class="price-section mt-auto mb-3">
+                                            @if (shoe.OldPrice.HasValue)
+                                            {
+                                                <div class="text-muted text-decoration-line-through small mb-1">
+                                                    @shoe.OldPrice.Value.ToString("#,##0") đ
+                                                </div>
+                                            }
+                                            <div class="text-danger fw-bold fs-4">@shoe.Price.ToString("#,##0") đ</div>
+                                        </div>
+
+                                        <div class="stock-status mb-3">
+                                            @if (shoe.Tonkho > 10)
+                                            {
+                                                <small class="text-success fw-medium"><i class="fas fa-check-circle me-1"></i>Còn hàng</small>
+                                            }
+                                            else if (shoe.Tonkho > 0)
+                                            {
+                                                <small class="text-warning fw-medium"><i class="fas fa-exclamation-triangle me-1"></i>Sắp hết (@shoe.Tonkho)</small>
+                                            }
+                                            else
+                                            {
+                                                <small class="text-danger fw-medium"><i class="fas fa-times-circle me-1"></i>Hết hàng</small>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="card-footer bg-white border-0 p-4 pt-0">
+                                        <div class="d-grid">
+                                            <a asp-controller="Shoes" asp-action="Details" asp-route-id="@shoe.Id"
+                                               class="btn btn-outline-dark fw-bold rounded-pill p-2">
+                                                <i class="fas fa-eye me-2"></i>Xem Chi Tiết
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         }
                     </div>
-                </section>
-
-                <section class="about-preview py-5 bg-white">
-                    <div class="container">
-                        <div class="row align-items-center">
-                            <div class="col-lg-6">
-                                <h3 class="fw-bold mb-4">Vua Giày Hiệu - Chất Lượng Là Danh Dự</h3>
-                                <p class="text-muted mb-4">
-                                    Chúng tôi cung cấp các mẫu giày hàng hiệu chính hãng từ các thương hiệu uy tín như Nike, Adidas,
-                                    Puma.
-                                    Với cam kết chất lượng và dịch vụ tốt nhất, chúng tôi mang đến cho bạn trải nghiệm mua sắm tuyệt
-                                    vời.
-                                </p>
-                                <a asp-controller="Home" asp-action="Gioithieu" class="btn btn-outline-danger">
-                                    <i class="fas fa-info-circle me-2"></i>Tìm Hiểu Thêm
-                                </a>
-                            </div>
-                            <div class="col-lg-6">
-                                <img src="~/images/about-preview.jpg" alt="Vua Giày Hiệu" class="img-fluid rounded shadow"
-                                     onerror="this.src='https://via.placeholder.com/600x400?text=Vua+Giay+Hieu'">
-                                </div>
-                            </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <div class="alert alert-light shadow-sm border p-5">
+                            <i class="fas fa-box-open fa-4x text-muted mb-4 opacity-50"></i>
+                            <h4 class="text-dark fw-bold">Không tìm thấy sản phẩm nào</h4>
+                            <p class="text-muted mb-4">Vui lòng thử lại với bộ lọc khác hoặc từ khóa tìm kiếm khác.</p>
+                            <a href="@Url.Action("Cuahang", "Home")" class="btn btn-primary btn-lg rounded-pill px-4">
+                                Khám phá tất cả sản phẩm
+                            </a>
                         </div>
-                    </section>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
 
-                    <section class="why-choose-us py-5 bg-light">
-                        <div class="container">
-                            <div class="text-center mb-5">
-                                <h2 class="display-5 fw-bold text-dark">Tại Sao Chọn Chúng Tôi?</h2>
-                                <p class="text-muted fs-5">Cam kết mang đến trải nghiệm mua sắm tốt nhất cho bạn</p>
-                            </div>
-                            <div class="row g-4">
-                                <div class="col-md-3">
-                                    <div class="text-center">
-                                        <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
-                                        <h5 class="fw-bold">Chính Hãng 100%</h5>
-                                        <p class="text-muted">Tất cả sản phẩm đều là hàng chính hãng từ nhà sản xuất</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="text-center">
-                                        <i class="fas fa-truck fa-3x text-success mb-3"></i>
-                                        <h5 class="fw-bold">Giao Hàng Miễn Phí</h5>
-                                        <p class="text-muted">Miễn phí giao hàng cho đơn hàng trên 500.000đ</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="text-center">
-                                        <i class="fas fa-undo fa-3x text-warning mb-3"></i>
-                                        <h5 class="fw-bold">Đổi Trả Dễ Dàng</h5>
-                                        <p class="text-muted">Chính sách đổi trả trong 30 ngày với sản phẩm còn mới</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="text-center">
-                                        <i class="fas fa-headset fa-3x text-info mb-3"></i>
-                                        <h5 class="fw-bold">Hỗ Trợ 24/7</h5>
-                                        <p class="text-muted">Đội ngũ chăm sóc khách hàng luôn sẵn sàng hỗ trợ bạn</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+<section class="stats-section py-5 bg-white border-top">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                    <h5 class="fw-bold mb-1">Chính Hãng 100%</h5>
+                    <p class="text-muted small mb-0">Sản phẩm từ NSX</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <i class="fas fa-truck fa-3x text-success mb-3"></i>
+                    <h5 class="fw-bold mb-1">Giao Hàng Nhanh</h5>
+                    <p class="text-muted small mb-0">Freeship mọi đơn</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <i class="fas fa-undo fa-3x text-warning mb-3"></i>
+                    <h5 class="fw-bold mb-1">Đổi Trả Dễ Dàng</h5>
+                    <p class="text-muted small mb-0">Trong vòng 30 ngày</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <i class="fas fa-headset fa-3x text-info mb-3"></i>
+                    <h5 class="fw-bold mb-1">Hỗ Trợ 24/7</h5>
+                    <p class="text-muted small mb-0">Tư vấn tận tình</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-                    <section class="stats-section py-5 bg-white">
-                        <div class="container">
-                            <div class="row text-center g-4">
-                                <div class="col-md-3">
-                                    <div class="stat-item">
-                                        <i class="fas fa-shoe-prints fa-3x text-primary mb-3"></i>
-                                        <h3 class="fw-bold text-primary">@(Model?.Count() ?? 0)</h3>
-                                        <p class="text-muted mb-0">Sản Phẩm</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="stat-item">
-                                        <i class="fas fa-users fa-3x text-success mb-3"></i>
-                                        <h3 class="fw-bold text-success">@(Model?.Sum(s => s.Daban) ?? 0)</h3>
-                                        <p class="text-muted mb-0">Khách Hàng Hài Lòng</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="stat-item">
-                                        <i class="fas fa-star fa-3x text-warning mb-3"></i>
-                                        <h3 class="fw-bold text-warning">@((Model?.Any() == true ? Model.Average(s => s.Rating) :
-                                                                    0).ToString("0.0"))</h3>
-                                            <p class="text-muted mb-0">Đánh Giá Trung Bình</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="stat-item">
-                                            <i class="fas fa-truck fa-3x text-info mb-3"></i>
-                                            <h3 class="fw-bold text-info">24/7</h3>
-                                            <p class="text-muted mb-0">Hỗ Trợ Khách Hàng</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
+<script>
+    var isAuthenticated = @Json.Serialize(Context.Session.GetString("UserName") != null);
+</script>
 
-                        <script>
-                            // Check if user is authenticated based on session
-                            var isAuthenticated = @Json.Serialize(Context.Session.GetString("UserName") != null);
-                        </script>
+@section Styles {
+    <link rel="stylesheet" href="~/css/cuahang.css" asp-append-version="true" />
+    <style>
+        .product-card {
+            transition: all 0.3s ease;
+            border-radius: 15px;
+            overflow: hidden;
+        }
 
-                        @section Styles {
-                            <style>
-                                .hero-section {
-                                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                                    min-height: 400px;
-                                    display: flex;
-                                    align-items: center;
-                                }
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08) !important;
+        }
 
-                                .product-card {
-                                    transition: all 0.3s ease;
-                                    border-radius: 15px;
-                                    overflow: hidden;
-                                }
+        .product-image {
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
 
-                                .product-card:hover {
-                                    transform: translateY(-10px);
-                                    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-                                }
+        /* KHUNG CHỨA ẢNH ĐỘNG SẢN PHẨM */
+        .product-slider-container {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            width: 100%;
+        }
+        .product-img-front {
+            position: relative;
+            z-index: 2;
+            animation: crossFade 4s infinite alternate;
+        }
+        .product-img-back {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+        }
 
-                                .product-image {
-                                    height: 250px;
-                                    object-fit: cover;
-                                    transition: transform 0.3s ease;
-                                }
+        /* KHUNG CHỨA ẢNH ĐỘNG BANNER */
+        .banner-container .banner-front {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2;
+            animation: crossFadeBanner 6s infinite alternate;
+        }
+        .banner-container .banner-back {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+        }
 
-                                .product-card:hover .product-image {
-                                    transform: scale(1.05);
-                                }
+        /* ANIMATION ĐỔI ẢNH CHUYÊN NGHIỆP */
+        @@keyframes crossFade {
+            0%, 40% { opacity: 1; }
+            60%, 100% { opacity: 0; }
+        }
+        @@keyframes crossFadeBanner {
+            0%, 45% { opacity: 1; }
+            55%, 100% { opacity: 0; }
+        }
 
-                                .rating .fa-star {
-                                    font-size: 0.9rem;
-                                }
+        .product-title-clamp {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 44px; /* Fixed height for 2 lines */
+            line-height: 22px;
+            font-size: 1.1rem;
+        }
 
-                                .stat-item {
-                                    padding: 2rem;
-                                    border-radius: 10px;
-                                    background: #f8f9fa;
-                                    transition: transform 0.3s ease;
-                                }
+        .group-hover-zoom {
+            overflow: hidden;
+        }
+        
+        .product-card:hover .product-image {
+            transform: scale(1.08);
+        }
 
-                                .stat-item:hover {
-                                    transform: translateY(-5px);
-                                }
+        .rating .fa-star {
+            font-size: 0.85rem;
+        }
 
-                                .breadcrumb-section {
-                                    border-bottom: 1px solid #e9ecef;
-                                }
+        .filter-sidebar {
+            position: sticky;
+            top: 20px;
+        }
 
-                                .btn {
-                                    border-radius: 25px;
-                                    font-weight: 600;
-                                    text-transform: uppercase;
-                                    letter-spacing: 0.5px;
-                                }
-                            </style>
-                        }
+        .filter-sidebar .form-select:focus,
+        .filter-sidebar .form-control:focus {
+            box-shadow: none;
+            background-color: #fff !important;
+            border: 1px solid #dee2e6 !important;
+        }
 
-                        @section Scripts {
-                            <script>
-                                function addToCart(id) {
-                                    // Hiển thị thông báo thành công
-                                    const toast = document.createElement('div');
-                                    toast.className = 'alert alert-success alert-dismissible fade show position-fixed';
-                                    toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-                                    toast.innerHTML = `
-                                            <i class="fas fa-check-circle me-2"></i>Sản phẩm đã được thêm vào giỏ hàng!
-                                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                        `;
-                                    document.body.appendChild(toast);
+        .stat-item {
+            padding: 2rem 1rem;
+            border-radius: 12px;
+            background: #f8f9fa;
+            transition: transform 0.3s ease;
+        }
 
-                                    // Tự động ẩn sau 3 giây
-                                    setTimeout(() => {
-                                        toast.remove();
-                                    }, 3000);
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background: #fff;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
 
-                                    // Gửi request thêm vào giỏ
-                                    fetch('/Cart/AddToCartAjax', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                        body: JSON.stringify({ shoeId: id, quantity: 1 })
-                                    })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            if (data.success) {
-                                                const toast = document.createElement('div');
-                                                toast.className = 'alert alert-success alert-dismissible fade show position-fixed';
-                                                toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-                                                toast.innerHTML = `
-                                                    <i class="fas fa-check-circle me-2"></i>${data.message}
-                                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                                `;
-                                                document.body.appendChild(toast);
+        .breadcrumb-section {
+            border-bottom: 1px solid #e9ecef;
+        }
+    </style>
+}
 
-                                                setTimeout(() => {
-                                                    toast.remove();
-                                                }, 3000);
-                                            } else {
-                                                alert(data.message);
-                                            }
-                                        })
-                                        .catch(error => {
-                                            console.log('Error:', error);
-                                            const toast = document.createElement('div');
-                                            toast.className = 'alert alert-info alert-dismissible fade show position-fixed';
-                                            toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-                                            toast.innerHTML = `
-                                                <i class="fas fa-info-circle me-2"></i>Sản phẩm đã được thêm vào giỏ hàng (demo mode)
-                                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                            `;
-                                            document.body.appendChild(toast);
-                                            setTimeout(() => {
-                                                toast.remove();
-                                            }, 3000);
-                                        });
-                                }
-                            </script>
-                        }
+@section Scripts {
+}

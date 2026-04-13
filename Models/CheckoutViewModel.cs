@@ -42,6 +42,9 @@ namespace cuahanggiay.ViewModels
         [Display(Name = "Ghi chú")]
         public string? Note { get; set; }
 
+        [Required(ErrorMessage = "Vui lòng chọn phương thức thanh toán.")]
+        public string PaymentMethod { get; set; } = "Offline";
+
         // --- Phần dữ liệu giỏ hàng ---
 
         public List<CartItemViewModel> CartItems { get; set; } = new List<CartItemViewModel>();

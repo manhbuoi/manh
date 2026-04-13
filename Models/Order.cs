@@ -19,8 +19,17 @@ namespace cuahanggiay.Models
         // Tổng tiền (TotalAmount)
         public decimal TotalAmount { get; set; }
 
-        // Trạng thái đơn hàng (Pending, Processing, Delivered, Cancelled)
+        // Trạng thái đơn hàng (Pending, Processing, Shipping, Completed, Cancelled)
         public string Status { get; set; } = "Pending";
+
+        // Phương thức thanh toán ("Online" hoặc "Offline")
+        public string PaymentMethod { get; set; } = "Offline";
+
+        // Người giao hàng (Shipper) được chỉ định
+        public int? ShipperId { get; set; }
+
+        [ForeignKey("ShipperId")]
+        public virtual User? Shipper { get; set; }
 
         // Tên người nhận (Đã có để khớp với giao diện)
         public string? ReceiverName { get; set; }

@@ -1,80 +1,381 @@
 @{
-    ViewData["Title"] = "Tin Tức";
+    ViewData["Title"] = "Tin Tức - Diễn Đàn Sneaker";
     Layout = "_Layout";
 }
 
-<div class="container my-5">
+<style>
+    .news-header {
+        background: linear-gradient(135deg, #111827 0%, #1e3a8a 100%);
+        padding: 80px 0 60px;
+        color: white;
+        text-align: center;
+        border-radius: 0 0 30px 30px;
+        margin-bottom: 50px;
+    }
+    .news-header h1 { font-weight: 900; letter-spacing: 1px; font-size: 2.5rem; text-transform: uppercase; }
+    
+    .news-card {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #f1f5f9;
+        position: relative;
+    }
+    .news-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    .news-img-wrapper {
+        position: relative;
+        overflow: hidden;
+        height: 240px;
+    }
+    .news-img-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+    .news-card:hover .news-img-wrapper img {
+        transform: scale(1.08);
+    }
+    .news-category {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: #dc3545;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        z-index: 2;
+    }
+    .news-content {
+        padding: 25px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .news-date {
+        color: #9ca3af;
+        font-size: 13px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .news-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        line-height: 1.4;
+        margin-bottom: 15px;
+        color: #111827;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    .news-title:hover { color: #dc3545; }
+    .news-excerpt {
+        color: #6b7280;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .news-footer {
+        margin-top: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 15px;
+        border-top: 1px solid #f1f5f9;
+    }
+    .interact-btn {
+        background: none;
+        border: none;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: 0.2s;
+    }
+    .interact-btn:hover, .interact-btn.active { color: #dc3545; }
+    .read-more-btn {
+        font-weight: bold;
+        color: #111827;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: 0.2s;
+    }
+    .read-more-btn:hover { color: #dc3545; padding-left: 5px; }
 
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Tin tức</li>
-        </ol>
-    </nav>
+    /* Modal Styles */
+    .modal-content { border-radius: 20px; border: none; }
+    .modal-header { border-bottom: 1px solid #f1f5f9; padding: 20px 30px; }
+    .modal-body { padding: 30px; }
+    .article-text { line-height: 1.8; color: #374151; font-size: 1.05rem; }
+    .comment-section { background: #f8fafc; padding: 20px; border-radius: 12px; margin-top: 30px; }
+    .comment-list { max-height: 200px; overflow-y: auto; margin-top: 20px; }
+    .comment-item { display: flex; gap: 15px; margin-bottom: 15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 15px; }
+    .comment-avatar { width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #64748b; }
+</style>
 
-    <h1 class="page-title text-center mb-5">TIN TỨC MỚI NHẤT</h1>
+<div class="news-header shadow-sm">
+    <div class="container">
+        <h1>VỮNG BƯỚC THỜI TRANG</h1>
+        <p class="opacity-75 fs-5">Cập nhật tin tức, xu hướng Sneaker và kinh nghiệm mua sắm mới nhất</p>
+    </div>
+</div>
 
-    <div class="row">
-        <h1 class="page-title">TIN TỨC</h1>
-
-        <div class="news-grid">
-            <article class="news-card">
-                <img src="https://via.placeholder.com/200x150" alt="Phân biệt giày LV">
-                <div class="news-content">
-                    <h3 class="news-title"><a href="#">Phân Biệt Giày LV Trainer Thật Giả: Bí Quyết T...</a></h3>
-                    <span class="news-date text-muted"><small>04/03/2025</small></span>
-                    <p class="news-excerpt">Bạn đam mê giày Louis Vuitton Trainer nhưng lo lắng mua phải hàng nhái, hàng
-                        kém chất lượng? Vua Giày Hiệu sẽ giúp bạn phân biệt giày lv trainer thật giả một cách dễ dàng và
-                        chính xác nhất...</p>
-                    <a href="#" class="btn btn-sm btn-outline-danger">Xem thêm</a>
+<div class="container mb-5 pb-5">
+    
+    <div class="row g-4">
+        <!-- BÀI VIẾT 1 -->
+        <div class="col-lg-4 col-md-6">
+            <div class="news-card">
+                <span class="news-category">Hướng Dẫn</span>
+                <div class="news-img-wrapper" data-bs-toggle="modal" data-bs-target="#newsModal1" style="cursor: pointer;">
+                    <img src="https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80" alt="Phân biệt giày">
                 </div>
-            </article>
-
-            <article class="news-card">
-                <img src="https://via.placeholder.com/200x150" alt="Happy Women's Day">
                 <div class="news-content">
-                    <h3 class="news-title"><a href="#">HAPPY WOMEN'S DAY 8/3 MƯA ƯU ĐÃI – ĐẠI ...</a></h3>
-                    <span class="news-date text-muted"><small>04/03/2025</small></span>
-                    <p class="news-excerpt">Ngày Quốc tế Phụ nữ 8/3 đang đến gần, và Vua Giày Hiệu mang đến chương trình
-                        đặc biệt “HAPPY WOMEN’S DAY 8/3 MƯA ƯU ĐÃI – ĐẠI TIỆC GIẢM GIÁ” với hàng loạt ưu đãi hấp dẫn...
-                    </p>
-                    <a href="#" class="btn btn-sm btn-outline-danger">Xem thêm</a>
+                    <div class="news-date"><i class="far fa-calendar-alt"></i> Hôm nay</div>
+                    <h3 class="news-title" data-bs-toggle="modal" data-bs-target="#newsModal1">Tuyệt chiêu phân biệt Air Jordan 1 Thật Giả cực chuẩn xác</h3>
+                    <p class="news-excerpt">Thị trường giày Replica và Fake đang ngày càng tinh vi. Việc nhận biết một đôi Air Jordan 1 chuẩn xịn không chỉ nằm ở mác tem mà còn ở chất da, form mông và đường kim mũi chỉ...</p>
+                    
+                    <div class="news-footer">
+                        <div class="d-flex gap-3">
+                            <button class="interact-btn like-btn" onclick="toggleLike(this)"><i class="far fa-heart"></i> <span class="like-count">124</span></button>
+                            <button class="interact-btn" data-bs-toggle="modal" data-bs-target="#newsModal1"><i class="far fa-comment"></i> <span>Bình luận</span></button>
+                        </div>
+                        <a href="javascript:void(0)" class="read-more-btn" data-bs-toggle="modal" data-bs-target="#newsModal1">Đọc tiếp <i class="fas fa-arrow-right"></i></a>
+                    </div>
                 </div>
-            </article>
+            </div>
+        </div>
 
-            <article class="news-card">
-                <img src="https://via.placeholder.com/200x150" alt="Giày Jordan hot">
-                <div class="news-content">
-                    <h3 class="news-title"><a href="#">Giày Jordan hot nhất hiện nay</a></h3>
-                    <span class="news-date text-muted"><small>21/02/2025</small></span>
-                    <p class="news-excerpt">Khám phá các mẫu giày Jordan hot nhất hiện nay luôn là chủ đề được giới trẻ
-                        quan tâm, đặc biệt là những tín đồ đam mê sneaker. Dòng giày Jordan không chỉ đơn thuần là một
-                        sản phẩm...</p>
-                    <a href="#" class="btn btn-sm btn-outline-danger">Xem thêm</a>
+        <!-- BÀI VIẾT 2 -->
+        <div class="col-lg-4 col-md-6">
+            <div class="news-card">
+                <span class="news-category">Sự Kiện</span>
+                <div class="news-img-wrapper" data-bs-toggle="modal" data-bs-target="#newsModal2" style="cursor: pointer;">
+                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80" alt="Khuyến mãi mùa hè">
                 </div>
-            </article>
+                <div class="news-content">
+                    <div class="news-date"><i class="far fa-calendar-alt"></i> 10/04/2026</div>
+                    <h3 class="news-title" data-bs-toggle="modal" data-bs-target="#newsModal2">ĐẠI TIỆC SNEAKER MÙA HÈ - Giảm giá thả ga lên tới 50%</h3>
+                    <p class="news-excerpt">Chào đón mùa hè rực lửa, Vua Giày Hiệu chính thức tung chương trình Big Sale lớn nhất năm. Hàng ngàn đôi Nike, Adidas đang chờ đón các Homies với mức giá rẻ không tưởng...</p>
+                    
+                    <div class="news-footer">
+                        <div class="d-flex gap-3">
+                            <button class="interact-btn like-btn" onclick="toggleLike(this)"><i class="far fa-heart"></i> <span class="like-count">3000</span></button>
+                            <button class="interact-btn" data-bs-toggle="modal" data-bs-target="#newsModal2"><i class="far fa-comment"></i> <span>Bình luận</span></button>
+                        </div>
+                        <a href="javascript:void(0)" class="read-more-btn" data-bs-toggle="modal" data-bs-target="#newsModal2">Đọc tiếp <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            <article class="news-card">
-                <img src="https://via.placeholder.com/200x150" alt="Giày Jordan Secondhand">
-                <div class="news-content">
-                    <h3 class="news-title"><a href="#">Giày Jordan Secondhand đẹp & giá tốt</a></h3>
-                    <span class="news-date text-muted"><small>21/02/2025</small></span>
-                    <p class="news-excerpt">Giày Jordan secondhand đang trở thành một trào lưu ngày càng phổ biến trong
-                        giới trẻ, đặc biệt là những người đam mê sneaker. Không chỉ mang giá trị sưu tầm, giày Jordan
-                        còn là biểu tượng thời trang...</p>
-                    <a href="#" class="btn btn-sm btn-outline-danger">Xem thêm</a>
+        <!-- BÀI VIẾT 3 -->
+        <div class="col-lg-4 col-md-6">
+            <div class="news-card">
+                <span class="news-category">Xu Hướng</span>
+                <div class="news-img-wrapper" data-bs-toggle="modal" data-bs-target="#newsModal3" style="cursor: pointer;">
+                    <img src="https://images.unsplash.com/photo-1552346154-21d86f53fe89?w=600&q=80" alt="Phối đồ">
                 </div>
-            </article>
+                <div class="news-content">
+                    <div class="news-date"><i class="far fa-calendar-alt"></i> 05/04/2026</div>
+                    <h3 class="news-title" data-bs-toggle="modal" data-bs-target="#newsModal3">Gợi ý 5 cách phối đồ cực cháy với Sneaker Chunky</h3>
+                    <p class="news-excerpt">Bạn có một đôi giày quá hầm hố nhưng không biết mặc chung với gì? Hãy để fashionista của Vua Giày Hiệu hướng dẫn bạn set đồ dạo phố thu hút mọi ánh nhìn ngay hôm nay...</p>
+                    
+                    <div class="news-footer">
+                        <div class="d-flex gap-3">
+                            <button class="interact-btn like-btn" onclick="toggleLike(this)"><i class="far fa-heart"></i> <span class="like-count">89</span></button>
+                            <button class="interact-btn" data-bs-toggle="modal" data-bs-target="#newsModal3"><i class="far fa-comment"></i> <span>Bình luận</span></button>
+                        </div>
+                        <a href="javascript:void(0)" class="read-more-btn" data-bs-toggle="modal" data-bs-target="#newsModal3">Đọc tiếp <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-@section Scripts {
-    <style>
+<!-- ================= MODALS (NỘI DUNG ĐỘNG) ================= -->
 
-        .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .news-card { border: 1px solid #eee; padding: 15px; border-radius: 8px; transition: transform 0.2s; }
-        .news-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .news-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 4px; margin-bottom: 15px; }
-    </style>
+<!-- Modal Bài 1 -->
+<div class="modal fade" id="newsModal1" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title fw-bold text-dark">Phân biệt Air Jordan 1 Thật Giả cực chuẩn</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img src="https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&q=80" class="w-100 rounded-3 mb-4" alt="Banner">
+                <div class="article-text">
+                    <p>Chào các bạn hữu, <strong>Air Jordan 1</strong> luôn là mục tiêu săn đón của mọi dân chơi hệ Sneaker. Nhưng dạo gần đây, công nghệ sao chép tinh vi làm người mua hoang mang cực độ.</p>
+                    <p>1. <strong>Hãy ngửi mùi keo:</strong> Một đôi giày xịn có mùi keo đặc trưng nhẹ nhàng, còn hàng Fake sặc sụa mùi hóa chất giá rẻ.</p>
+                    <p>2. <strong>Kiểm tra Logo Wings:</strong> Dấu ấn cánh chim của Jordan Auth đường dập rất sâu và nổi bóng, trong khi hàng chất lượng kém thì logo mờ, font chữ dính vào nhau.</p>
+                    <p>Đến với Vua Giày Hiệu, chúng mình cam kết các phiên bản Replica siêu cấp 1:1 đập tan mọi nghi kỵ về độ bền và ngoại hình, chuẩn form 99% so với Real giúp bạn tự tin sải bước!</p>
+                </div>
+                
+                <!-- Comments -->
+                <div class="comment-section">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-comments text-danger me-2"></i> Thảo luận sôi nổi</h5>
+                    <div class="d-flex gap-2">
+                        <input type="text" id="inputComment1" class="form-control bg-white" placeholder="Tuyệt chiêu hay quá bạn ơi...">
+                        <button class="btn btn-danger" onclick="postComment('1')">Gửi</button>
+                    </div>
+                    <div class="comment-list" id="commentList1">
+                        <div class="comment-item">
+                            <div class="comment-avatar">T</div>
+                            <div>
+                                <h6 class="fw-bold mb-1">Tuấn Cường <small class="text-muted fw-normal">10 phút trước</small></h6>
+                                <p class="mb-0 text-secondary">Mình đã bị lừa 1 lần, bài viết rất thiết thực. Cảm ơn Shop!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Bài 2 -->
+<div class="modal fade" id="newsModal2" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title fw-bold text-dark">ĐẠI TIỆC SNEAKER MÙA HÈ - Sale Sốc</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80" class="w-100 rounded-3 mb-4" alt="Banner">
+                <div class="article-text">
+                    <p>Đừng để mùa hè trôi qua một cách tẻ nhạt. Chuẩn bị rước ngay những đôi <strong>Sneaker bốc lửa</strong> về kệ giày của bạn với sự kiện ưu đãi kỷ lục tại Vua Giày Hiệu.</p>
+                    <p><strong>- Flash Sale Các Ngày Chẵn:</strong> Đồng giá 499K cho Series Giày Thể Thao chạy bộ êm ái.</p>
+                    <p><strong>- Mua 2 tặng 1 Voucher:</strong> Khi mua combo đôi yêu thương, nhận ngay Voucher Free Ship Toàn Quốc kèm quà tặng tất thời trang xịn xò.</p>
+                    <p>Nhanh chân chốt đơn vì số lượng cực kỳ có hạn. Giao diện Cửa hàng của chúng mình đã sẵn sàng lên kệ toàn bộ hệ sinh thái mùa hè này!</p>
+                </div>
+                
+                <div class="comment-section">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-comments text-danger me-2"></i> Thảo luận sôi nổi</h5>
+                    <div class="d-flex gap-2">
+                        <input type="text" id="inputComment2" class="form-control bg-white" placeholder="Viết bình luận của bạn...">
+                        <button class="btn btn-danger" onclick="postComment('2')">Gửi</button>
+                    </div>
+                    <div class="comment-list" id="commentList2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Bài 3 -->
+<div class="modal fade" id="newsModal3" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title fw-bold text-dark">5 Cách Phối Đồ Cực Cháy Với Chunky Sneaker</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img src="https://images.unsplash.com/photo-1552346154-21d86f53fe89?w=800&q=80" class="w-100 rounded-3 mb-4" alt="Banner">
+                <div class="article-text">
+                    <p>Giày Chunky hay còn gọi là giày "Dad shoes" đang thống trị các sàn diễn thời trang đường phố bằng vẻ đẹp hầm hố, vượt khuôn khổ.</p>
+                    <p>1. <strong>Phong cách đường phố (Streetwear):</strong> Kết hợp cùng quần Jogger ống rộng và áo Hoodie Oversize. Trông bạn sẽ bự rầm và cực kì cá tính.</p>
+                    <p>2. <strong>Kết hợp với đồ Denim:</strong> Quần Jeans rách gối và áo thun basic sơ vin, để đôi Chunky làm điểm nhấn dưới chân là đủ chiếm Spot-light.</p>
+                    <p>Dù cho đôi giày có to bự đến đâu, quan trọng nhất vẫn là sự tự tin của bạn. Cùng tìm kiếm ngay các form giày siêu dị tại cửa hàng của chúng mình nhé!</p>
+                </div>
+                
+                <div class="comment-section">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-comments text-danger me-2"></i> Thảo luận sôi nổi</h5>
+                    <div class="d-flex gap-2">
+                        <input type="text" id="inputComment3" class="form-control bg-white" placeholder="Bạn thấy cách phối nào đẹp nhất?">
+                        <button class="btn btn-danger" onclick="postComment('3')">Gửi</button>
+                    </div>
+                    <div class="comment-list" id="commentList3">
+                         <div class="comment-item">
+                            <div class="comment-avatar">L</div>
+                            <div>
+                                <h6 class="fw-bold mb-1">LyLy Xinh <small class="text-muted fw-normal">1 giờ trước</small></h6>
+                                <p class="mb-0 text-secondary">Mình rất thích mặc kiểu Jeans rách với em giày bự chảng, nhìn cool ngầu lắm luônn!!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tintuc.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script>
+        // JS Xử lý Like Động
+        function toggleLike(btn) {
+            btn.classList.toggle('active');
+            let icon = btn.querySelector('i');
+            let countSpan = btn.querySelector('.like-count');
+            let count = parseInt(countSpan.textContent);
+            
+            if (btn.classList.contains('active')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                countSpan.textContent = count + 1;
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                countSpan.textContent = count - 1;
+            }
+        }
+
+        // JS Xử lý Comment Động
+        function postComment(id) {
+            let input = document.getElementById('inputComment' + id);
+            let text = input.value.trim();
+            if (!text) return;
+
+            let list = document.getElementById('commentList' + id);
+            
+            // Xây dựng giao diện comment mới
+            let newComment = document.createElement('div');
+            newComment.className = 'comment-item';
+            
+            // Tên tài khoản mô phỏng
+            let userName = "Khách hàng " + Math.floor(Math.random() * 100);
+            let initial = userName.charAt(0);
+
+            newComment.innerHTML = `
+                <div class="comment-avatar bg-danger text-white">${initial}</div>
+                <div>
+                    <h6 class="fw-bold mb-1">${userName} <small class="text-muted fw-normal">Vừa xong</small></h6>
+                    <p class="mb-0 text-secondary">${text}</p>
+                </div>
+            `;
+            
+            // Chèn vào đầu danh sách
+            list.insertBefore(newComment, list.firstChild);
+            
+            // Xóa input
+            input.value = '';
+            
+            // Báo hiệu Toast hoặc mượt mà
+            alert("Bình luận của bạn đã được đăng thành công!");
+        }
+    </script>
 }

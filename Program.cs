@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using cuahanggiay.Data;
+using cuahanggiay.Services;
 
 internal class Program
 {
@@ -9,6 +10,7 @@ internal class Program
 
         // --- 1. Cấu hình Dịch vụ (Services) ---
         builder.Services.AddControllersWithViews();
+        builder.Services.AddTransient<IEmailService, EmailService>();
 
         // [THÊM MỚI] Cấu hình Xác thực (Authentication) bằng Cookie
         builder.Services.AddAuthentication("CustomerSecurityScheme")

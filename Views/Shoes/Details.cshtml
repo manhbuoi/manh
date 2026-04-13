@@ -26,20 +26,21 @@
         <div class="sale-badge">@(Model.OldPrice.HasValue && Model.OldPrice > Model.Price ? $"{Math.Round((1 - Model.Price / Model.OldPrice.Value) * 100)}%" : "")</div>
 
         <div class="col-md-6 mb-4 mb-md-0">
-            <div class="product-gallery position-relative text-center border">
-                <button class="btn btn-dark btn-sm position-absolute top-0 end-0 m-2 rounded-circle zoom-btn">
+            <div class="product-gallery position-relative text-center border p-0">
+                <button class="btn btn-dark btn-sm position-absolute top-0 end-0 m-2 rounded-circle zoom-btn" style="z-index: 10;">
                     <i class="bi bi-search"></i>
                 </button>
             
-                <img src="~/images/@Model.ImageUrl" alt="@Model.Name"
-                     class="img-fluid w-100" />
+                <div class="card-img-wrapper bg-white border-0">
+                    <img src="~/images/@Model.ImageUrl" alt="@Model.Name" />
+                </div>
             
                 <button class="gallery-nav prev-btn position-absolute top-50 start-0 translate-middle-y border-0"><i
                     class="bi bi-chevron-left"></i></button>
-                    <button class="gallery-nav next-btn position-absolute top-50 end-0 translate-middle-y border-0"><i
-                        class="bi bi-chevron-right"></i></button>
-                    </div>
-                </div>
+                <button class="gallery-nav next-btn position-absolute top-50 end-0 translate-middle-y border-0"><i
+                    class="bi bi-chevron-right"></i></button>
+            </div>
+        </div>
 
                 <div class="col-md-6 ps-md-4">
                     <h1 class="product-title h4 fw-bold mb-3">@Model.Name</h1>
@@ -47,12 +48,12 @@
                         <div class="product-price mb-3">
                             @if (Model.OldPrice.HasValue && Model.OldPrice > Model.Price)
                             {
-                                <span class="current-price text-success fs-3 fw-bold me-3">@Model.Price.ToString("N0") ₫</span>
-                                <span class="old-price text-dark text-decoration-line-through fs-5 fw-bold">@Model.OldPrice.Value.ToString("N0") ₫</span>
+                                <span class="current-price text-danger fs-3 fw-bold me-3">@Model.Price.ToString("N0") ₫</span>
+                                <span class="old-price text-muted text-decoration-line-through fs-5 fw-bold">@Model.OldPrice.Value.ToString("N0") ₫</span>
                             }
                             else
                             {
-                                <span class="current-price text-success fs-3 fw-bold me-3">@Model.Price.ToString("N0") ₫</span>
+                                <span class="current-price text-danger fs-3 fw-bold me-3">@Model.Price.ToString("N0") ₫</span>
                             }
                         </div>
 
@@ -92,25 +93,27 @@
                             </div>
 
                             <form id="cartForm" asp-controller="Cart" asp-action="AddToCart" method="post"
-                                  class="product-actions d-flex align-items-center gap-3 mb-4">
+                                  class="product-actions mt-4 mb-4">
                                 <input type="hidden" name="productId" value="@Model.Id" />
                                 <input type="hidden" name="productName" value="@Model.Name" />
                                 <input type="hidden" name="price" value="@Model.Price" />
                                 <input type="hidden" name="imageUrl" value="@Model.ImageUrl" />
                                 <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
-                                <div class="d-flex align-items-center gap-2">
+                                
+                                <div class="d-flex align-items-center gap-2 mb-4">
                                     <label for="quantity" class="fw-bold mb-0">Số lượng:</label>
                                     <input type="number" id="quantity" name="quantity" value="1" min="1" class="form-control text-center quantity-input"
                                            style="width: 70px;" required />
                                 </div>
                 
-                                <button type="submit" id="buyNowBtn" name="action" value="buy_now"
-                                        class="btn btn-success fw-bold px-4 py-2 rounded-0" disabled>MUA NGAY</button>
-                                <button type="submit" id="addCartBtn" name="action" value="add_cart"
-                                        class="btn btn-secondary fw-bold px-3 py-2 rounded-0 text-white"
-                                        style="background-color: #6c757d; border-color: #6c757d;" disabled>
-                                    Thêm vào giỏ hàng <i class="bi bi-bag ms-1"></i>
-                                </button>
+                                <div class="d-flex flex-column flex-sm-row gap-3">
+                                    <button type="submit" id="buyNowBtn" name="action" value="buy_now"
+                                            class="btn-cta-primary flex-grow-1 fs-5 py-3" disabled>MUA NGAY</button>
+                                    <button type="submit" id="addCartBtn" name="action" value="add_cart"
+                                            class="btn-cta-secondary flex-grow-1 fs-5 py-3" disabled>
+                                        Thêm vào giỏ <i class="bi bi-cart-plus ms-1"></i>
+                                    </button>
+                                </div>
                             </form>
 
                             <div class="product-specs border p-1 mt-4">

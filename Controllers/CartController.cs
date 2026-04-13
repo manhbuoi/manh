@@ -106,7 +106,7 @@ namespace cuahanggiay.Controllers
         // 3. THÊM VÀO GIỎ BẰNG AJAX (Ép đăng nhập)
         // ========================================================
         [HttpPost]
-        public IActionResult AddToCartAjax(int shoeId, int quantity = 1)
+        public IActionResult AddToCartAjax(int shoeId, string size, int quantity = 1)
         {
             // KIỂM TRA: Dành cho nút bấm dạng ngầm (AJAX)
             if (User.Identity == null || !User.Identity.IsAuthenticated)
@@ -118,7 +118,7 @@ namespace cuahanggiay.Controllers
             if (shoe == null) return Json(new { success = false, message = "Sản phẩm không tồn tại." });
 
             var cart = GetCartFromSession();
-            var existingItem = cart.FirstOrDefault(item => item.ProductId == shoeId);
+            var existingItem = cart.FirstOrDefault(item => item.ProductId == shoeId && item.Size == size);
 
             if (existingItem != null) existingItem.Quantity += quantity;
             else
@@ -129,12 +129,13 @@ namespace cuahanggiay.Controllers
                     ProductName = shoe.Name,
                     Price = shoe.Price,
                     ImageUrl = shoe.ImageUrl,
-                    Quantity = quantity
+                    Quantity = quantity,
+                    Size = size
                 });
             }
 
             SaveCartToSession(cart);
-            return Json(new { success = true, message = $"Đã thêm {shoe.Name} vào giỏ hàng!" });
+            return Json(new { success = true, message = $"Đã thêm {shoe.Name} (Size: {size}) vào giỏ hàng!" });
         }
 
         // ========================================================
@@ -195,11 +196,13 @@ namespace cuahanggiay.Controllers
                     UserId = userId,
                     OrderCode = orderCode,
                     OrderDate = DateTime.Now,
+                    TotalAmount = cart.Sum(i => i.Total),
                     ReceiverName = model.FullName,
                     ReceiverPhone = model.PhoneNumber,
                     ShippingAddress = model.Address,
                     Notes = model.Note,
-                    Status = "Chờ xử lý"
+                    Status = "Chờ xử lý",
+                    PaymentMethod = model.PaymentMethod
                 };
 
                 _context.Orders.Add(order);
@@ -211,7 +214,11 @@ namespace cuahanggiay.Controllers
                     {
                         OrderId = order.Id,
                         ShoeId = item.ProductId,
+                        ShoeName = item.ProductName,
+                        UnitPrice = item.Price,
                         Quantity = item.Quantity,
+                        Size = item.Size,
+                        TotalPrice = item.Total
                     };
                     _context.OrderItems.Add(orderItem);
                 }

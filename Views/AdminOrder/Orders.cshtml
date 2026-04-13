@@ -17,8 +17,9 @@
                         <th class="text-center">Mã Đơn</th>
                         <th>Khách hàng</th>
                         <th>Ngày đặt</th>
-                        <th>Trạng thái</th>
-                        <th class="text-center">Thao tác duyệt đơn</th>
+                        <th>Trạng thái & Giao hàng</th>
+                        <th class="text-center">Quản lý Đơn</th>
+                        <th class="text-center">Điều phối</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,7 +39,11 @@
                                     {
                                         <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Chờ xử lý</span>
                                     }
-                                    else if (order.Status == "Đã duyệt" || order.Status == "Đang giao")
+                                    else if (order.Status == "Đã xác nhận" || order.Status == "Đã duyệt")
+                                    {
+                                        <span class="badge bg-primary"><i class="fas fa-clipboard-check me-1"></i>Đã xác nhận</span>
+                                    }
+                                    else if (order.Status == "Đang giao")
                                     {
                                         <span class="badge bg-info text-dark"><i class="fas fa-truck me-1"></i>Đang giao</span>
                                     }
@@ -50,30 +55,48 @@
                                     {
                                         <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Đã hủy</span>
                                     }
+                                    <div class="mt-1 small text-muted">
+                                        <i class="fas fa-wallet"></i> @order.PaymentMethod
+                                        <br/>
+                                        <i class="fas fa-motorcycle"></i> @(order.Shipper?.FullName ?? "Chưa phân công")
+                                    </div>
                                 </td>
                                 <td class="text-center">
                                     <form asp-action="UpdateOrderStatus" method="post"
-                                          class="d-flex justify-content-center gap-2">
+                                          class="d-flex flex-column align-items-center gap-1">
                                         <input type="hidden" name="id" value="@order.Id" />
                                         <select name="status" class="form-select form-select-sm" style="width: 140px;">
-                                            <option value="Chờ xử lý" selected="@(order.Status == "Chờ xử lý")">Chờ xử lý
-                                            </option>
-                                            <option value="Đang giao"
-                                                    selected="@(order.Status == "Đang giao" || order.Status == "Đã duyệt")">Đang
-                                                giao</option>
-                                                <option value="Hoàn thành" selected="@(order.Status == "Hoàn thành")">Hoàn thành
-                                                </option>
-                                                <option value="Đã hủy" selected="@(order.Status == "Đã hủy")">Đã hủy</option>
-                                            </select>
-                                            <button type="submit" class="btn btn-sm btn-primary fw-bold">Cập nhật</button>
-                                        </form>
-                                    </td>
+                                            <option value="Chờ xử lý" selected="@(order.Status == "Chờ xử lý")">Chờ xử lý</option>
+                                            <option value="Đã xác nhận" selected="@(order.Status == "Đã xác nhận" || order.Status == "Đã duyệt")">Đã xác nhận</option>
+                                            <option value="Đang giao" selected="@(order.Status == "Đang giao")">Đang giao</option>
+                                            <option value="Hoàn thành" selected="@(order.Status == "Hoàn thành")">Hoàn thành</option>
+                                            <option value="Đã hủy" selected="@(order.Status == "Đã hủy")">Đã hủy</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-primary fw-bold w-100" style="max-width: 140px;">Cập nhật</button>
+                                    </form>
+                                </td>
+                                <td class="text-center">
+                                    <form asp-action="AssignShipper" method="post" class="d-flex flex-column align-items-center gap-1">
+                                        <input type="hidden" name="orderId" value="@order.Id" />
+                                        <select name="shipperId" class="form-select form-select-sm" style="width: 140px;" required>
+                                            <option value="">Chọn Shipper...</option>
+                                            @if (ViewBag.Shippers != null)
+                                            {
+                                                foreach (var s in ViewBag.Shippers)
+                                                {
+                                                    <option value="@s.Id" selected="@(order.ShipperId == s.Id)">@s.FullName</option>
+                                                }
+                                            }
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-success fw-bold w-100" style="max-width: 140px;">Chỉ định</button>
+                                    </form>
+                                </td>
                                 </tr>
                             }
                         } else
                         {
                             <tr>
-                                <td colspan="5" class="text-center py-4 text-muted">Chưa có đơn hàng nào trong hệ thống.</td>
+                                <td colspan="6" class="text-center py-4 text-muted">Chưa có đơn hàng nào trong hệ thống.</td>
                             </tr>
                         }
                     </tbody>

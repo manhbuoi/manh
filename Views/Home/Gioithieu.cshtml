@@ -2,205 +2,276 @@
     ViewData["Title"] = "Giới Thiệu - Vua Giày Hiệu";
 }
 
-<link rel="stylesheet" href="~/css/about.css" asp-append-version="true" />
+<style>
+    .about-hero {
+        background: linear-gradient(rgba(17, 24, 39, 0.8), rgba(17, 24, 39, 0.8)), url('/images/banner-shoes.jpg') center/cover no-repeat;
+        padding: 100px 0;
+        text-align: center;
+        color: white;
+    }
+    .about-hero h1 { font-weight: 900; letter-spacing: 2px; font-size: 3rem; text-transform: uppercase; }
+    .about-hero p { font-size: 1.2rem; opacity: 0.9; margin-top: 15px; font-weight: 300; }
+    
+    .section-title {
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #111827;
+        margin-bottom: 2rem;
+        position: relative;
+        padding-bottom: 10px;
+    }
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background-color: #dc3545;
+        border-radius: 2px;
+    }
+    
+    .feature-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%;
+        border: 1px solid #f3f4f6;
+    }
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        border-color: #e5e7eb;
+    }
+    .feature-icon-box {
+        width: 70px;
+        height: 70px;
+        background-color: #fce8e8;
+        color: #dc3545;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin: 0 auto 20px auto;
+        transition: 0.3s;
+    }
+    .feature-card:hover .feature-icon-box {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    .timeline-container { position: relative; padding: 20px 0; }
+    .timeline-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 30px;
+        height: 100%;
+        width: 4px;
+        background: #e5e7eb;
+        border-radius: 2px;
+    }
+    .timeline-item {
+        position: relative;
+        margin-bottom: 40px;
+        padding-left: 80px;
+    }
+    .timeline-year {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 64px;
+        height: 64px;
+        background: #111827;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 14px;
+        border: 4px solid #fff;
+        box-shadow: 0 0 0 4px #e5e7eb;
+        z-index: 2;
+    }
+    .timeline-content {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .timeline-content h5 { font-weight: 700; color: #dc3545; margin-bottom: 10px; }
+    
+    .brand-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        height: 100px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #9ca3af;
+        transition: 0.3s;
+    }
+    .brand-box:hover {
+        border-color: #111827;
+        color: #111827;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+    
+    .cta-banner {
+        background: linear-gradient(135deg, #1e3a8a 0%, #111827 100%);
+        border-radius: 20px;
+        color: white;
+        padding: 60px 40px;
+        text-align: center;
+        margin-top: 60px;
+    }
+</style>
 
-<!-- BANNER -->
-<div class="about-banner">
+<!-- HERO BANNER -->
+<section class="about-hero" style="background-color: #111827;">
     <div class="container">
-        <h2>Về Chúng Tôi</h2>
-        <p>Khám phá câu chuyện của Vua Giày Hiệu</p>
+        <h1>Vua Giày Hiệu</h1>
+        <p>Hành trình định hình phong cách thời trang của bạn</p>
     </div>
-</div>
+</section>
 
 <!-- BREADCRUMB -->
-<div class="breadcrumb-section">
+<div class="bg-light border-bottom">
     <div class="container">
-        <nav aria-label="breadcrumb">
+        <nav aria-label="breadcrumb" class="py-3">
             <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
-                <li class="breadcrumb-item active">Giới thiệu</li>
+                <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-muted"><i class="fas fa-home me-1"></i> Trang chủ</a></li>
+                <li class="breadcrumb-item active text-danger fw-bold" aria-current="page">Giới thiệu</li>
             </ol>
         </nav>
     </div>
 </div>
 
-
-<div class="container my-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-     
-            <div class="toc-box mb-5"> 
-                <div class="toc-title">📑 Mục Lục</div>
-                <ol>
-                    <li><a href="#section-1">Vua Giày Hiệu là gì?</a></li>
-                    <li><a href="#section-2">Lịch sử phát triển</a></li>
-                    <li><a href="#section-3">Tại sao chọn chúng tôi?</a></li>
-                    <li><a href="#section-4">Cam kết chất lượng</a></li>
-                    <li><a href="#section-5">Các thương hiệu</a></li>
-                </ol>
-            </div>
-
-   
-            <section id="section-1" class="content-section">
-                <h2 class="section-title">🏪 Vua Giày Hiệu là gì?</h2>
-                <p>
-                    <strong>Vua Giày Hiệu</strong> tự hào là địa chỉ bán giày uy tín, cao cấp như: giày Replica 1:1, giày Like Auth và Best Quality với 
-                    mục tiêu mang lại những sản phẩm chất lượng nhất đến tay khách hàng. Chúng tôi chuyên cung cấp các mẫu giày sneaker, giày thể thao, 
-                    giày công sở và giày thời trang từ các thương hiệu nổi tiếng trên thế giới.
-                </p>
-                <p>
-                    Với đội ngũ nhân viên giàu kinh nghiệm và am hiểu sâu sắc về thị trường giày dép, Vua Giày Hiệu cam kết mang đến cho khách hàng 
-                    trải nghiệm mua sắm tuyệt vời nhất, từ việc tư vấn chọn size, màu sắc phù hợp đến dịch vụ giao hàng tận nơi nhanh chóng.
-                </p>
-            </section>
-
-
-            <section id="section-2" class="content-section">
-                <h2 class="section-title">📈 Lịch Sử Phát Triển</h2>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-marker"><strong>2018</strong></div>
-                        <div class="timeline-content">
-                            <h5>Thành Lập</h5>
-                            <p>Vua Giày Hiệu chính thức thành lập vào tháng 02/2018 với sứ mệnh mang đến những đôi giày chất lượng cao cho người tiêu dùng Việt Nam.</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-marker"><strong>2020</strong></div>
-                        <div class="timeline-content">
-                            <h5>Mở Rộng Kinh Doanh</h5>
-                            <p>Mở rộng danh mục sản phẩm, hợp tác với nhiều nhà cung cấp uy tín và phát triển hệ thống cửa hàng trực tuyến.</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-marker"><strong>2023</strong></div>
-                        <div class="timeline-content">
-                            <h5>Đạt Milestone</h5>
-                            <p>Phục vụ hơn 10.000 khách hàng hài lòng và trở thành một trong những nhà bán lẻ giày hiệu hàng đầu tại Việt Nam.</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-marker"><strong>2026</strong></div>
-                        <div class="timeline-content">
-                            <h5>Hiện Nay</h5>
-                            <p>Tiếp tục đổi mới, áp dụng công nghệ tiên tiến để nâng cao trải nghiệm khách hàng và mở rộng thị trường.</p>
-                        </div>
+<div class="container py-5">
+    <div class="row gy-5">
+        
+        <!-- ABOUT INFO -->
+        <div class="col-lg-12">
+            <h2 class="section-title">CHÚNG TÔI LÀ AI?</h2>
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <p class="fs-5 text-muted lh-lg">
+                        <strong>Vua Giày Hiệu</strong> khởi nguồn từ niềm đam mê bứt phá với sứ mệnh trở thành điểm đến số 1 cho những tín đồ yêu nền văn hóa sát mặt đất. 
+                    </p>
+                    <p class="text-muted lh-lg">
+                        Tại đây, chúng tôi cam kết mang đến những sản phẩm chất lượng cao nhất như giày Replica 1:1, Like Auth, và các bản thu nhỏ đặc biệt từ các thương hiệu Sneaker đình đám. Dù bạn theo đuổi phong cách năng động, thể thao hay thanh lịch công sở, Vua Giày Hiệu tự hào luôn sở hữu mảnh ghép hoàn hảo dành riêng cho đôi chân của bạn.
+                    </p>
+                </div>
+                <div class="col-lg-6">
+                    <div class="bg-light rounded-4 p-4 p-sm-5 border text-center">
+                        <i class="fas fa-quote-left fs-1 text-danger mb-3 opacity-50"></i>
+                        <h4 class="fw-bold" style="line-height: 1.6; font-style: italic;">"Một đôi giày tốt sẽ đưa bạn đến những nơi tuyệt vời. Chúng tôi ở đây để giúp bạn chọn đôi giày đó."</h4>
+                        <p class="mt-3 text-muted fw-bold">- CEO Vua Giày Hiệu -</p>
                     </div>
                 </div>
-            </section>
-
- 
-            <section id="section-3" class="content-section">
-                <h2 class="section-title">⭐ Tại Sao Chọn Chúng Tôi?</h2>
-                <div class="row mt-4">
-                    <div class="col-md-6 mb-4">
-                        <div class="feature-card">
-                            <div class="feature-icon">🎯</div>
-                            <h5>Chất Lượng Hàng Đầu</h5>
-                            <p>Tất cả sản phẩm đều được kiểm tra kỹ càng trước khi gửi đến khách hàng, đảm bảo độ bền và thoải mái.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-4">
-                        <div class="feature-card">
-                            <div class="feature-icon">💬</div>
-                            <h5>Dịch Vụ Khách Hàng Tuyệt Vời</h5>
-                            <p>Đội ngũ hỗ trợ 24/7 sẵn sàng giúp đỡ bạn với mọi thắc mắc và yêu cầu.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-4">
-                        <div class="feature-card">
-                            <div class="feature-icon">🚚</div>
-                            <h5>Giao Hàng Nhanh Chóng</h5>
-                            <p>Giao hàng tận nơi trong vòng 24-48 giờ trên toàn quốc với chi phí hợp lý.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-4">
-                        <div class="feature-card">
-                            <div class="feature-icon">🔄</div>
-                            <h5>Đổi Trả Dễ Dàng</h5>
-                            <p>Chính sách đổi trả linh hoạt trong vòng 7 ngày nếu sản phẩm có lỗi từ nhà sản xuất.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="section-4" class="content-section">
-                <h2 class="section-title">🔒 Cam Kết Chất Lượng</h2>
-                <p>
-                    Tại Vua Giày Hiệu, chúng tôi cam kết mang đến cho khách hàng những sản phẩm chất lượng cao nhất với các tiêu chuẩn nghiêm ngặt:
-                </p>
-                <ul class="quality-list">
-                    <li>Sản phẩm chính hãng 100% từ các nhà cung cấp uy tín</li>
-                    <li>Kiểm tra chất lượng kỹ càng trước khi xuất kho</li>
-                    <li>Bảo hành sản phẩm trong thời gian quy định</li>
-                    <li>Hỗ trợ tư vấn và hướng dẫn sử dụng sản phẩm</li>
-                    <li>Cam kết bảo mật thông tin cá nhân của khách hàng</li>
-                    <li>Giá cả cạnh tranh, phù hợp với mọi đối tượng khách hàng</li>
-                </ul>
-                <p>
-                    Chúng tôi luôn đặt lợi ích và sự hài lòng của khách hàng lên hàng đầu, vì vậy mọi phản hồi và góp ý đều được chúng tôi trân trọng và cải thiện liên tục.
-                </p>
-            </section>
-
-            <section id="section-5" class="content-section">
-                <h2 class="section-title">🏷️ Các Thương Hiệu Chúng Tôi Phân Phối</h2>
-                <p>
-                    Vua Giày Hiệu tự hào là đối tác phân phối chính thức của nhiều thương hiệu giày nổi tiếng trên thế giới, bao gồm:
-                </p>
-                <div class="row mt-4">
-                    <div class="col-md-4 mb-4">
-                        <div class="brand-card">
-                            <div class="brand-icon">👟</div>
-                            <h5>Nike</h5>
-                            <p>Giày thể thao và sneaker hàng đầu thế giới</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="brand-card">
-                            <div class="brand-icon">👢</div>
-                            <h5>Adidas</h5>
-                            <p>Thương hiệu giày thể thao và thời trang toàn cầu</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="brand-card">
-                            <div class="brand-icon">🧢</div>
-                            <h5>Puma</h5>
-                            <p>Giày sneaker và trang phục thể thao chất lượng</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="brand-card">
-                            <div class="brand-icon">👡</div>
-                            <h5>Converse</h5>
-                            <p>Icon giày sneaker cổ điển và hiện đại</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="brand-card">
-                            <div class="brand-icon">🥾</div>
-                            <h5>Vans</h5>
-                            <p>Giày skateboarding và streetwear nổi tiếng</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="brand-card">
-                            <div class="brand-icon">👞</div>
-                            <h5>New Balance</h5>
-                            <p>Giày chạy bộ và sneaker chất lượng cao</p>
-                        </div>
-                    </div>
-                </div>
-                <p>
-                    Ngoài ra, chúng tôi còn cung cấp các thương hiệu khác như Jordan, Reebok, Under Armour và nhiều mẫu giày độc quyền từ các nhà thiết kế hàng đầu.
-                </p>
-            </section>
-
-            <div class="cta-section">
-                <h3>Sẵn Sàng Tìm Đôi Giày Hoàn Hảo?</h3>
-                <p>Ghé thăm cửa hàng trực tuyến của chúng tôi ngay hôm nay</p>
-                <a asp-controller="Shoes" asp-action="Index" class="btn btn-danger btn-lg">Xem Sản Phẩm</a>
             </div>
         </div>
+
+        <!-- FEATURES -->
+        <div class="col-lg-12 mt-5 pt-4">
+            <h2 class="section-title text-center mx-auto mb-5">TẠI SAO CHỌN VUA GIÀY HIỆU?</h2>
+            <style>.section-title.text-center::after { left: 50%; transform: translateX(-50%); }</style>
+            
+            <div class="row g-4">
+                <div class="col-md-3 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon-box"><i class="fas fa-gem"></i></div>
+                        <h5 class="fw-bold mb-3">Chất Lượng VIP</h5>
+                        <p class="text-muted small mb-0">Hàng siêu cấp, từng đường kim mũi chỉ được kiểm duyệt nghiêm ngặt chuẩn hệ thống.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon-box"><i class="fas fa-headset"></i></div>
+                        <h5 class="fw-bold mb-3">Tư Vấn 24/7</h5>
+                        <p class="text-muted small mb-0">Đội ngũ Stylist kinh nghiệm luôn sẵn sàng giải đáp size số và cách phối đồ.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon-box"><i class="fas fa-shipping-fast"></i></div>
+                        <h5 class="fw-bold mb-3">Giao Hàng Hỏa Tốc</h5>
+                        <p class="text-muted small mb-0">Đóng gói Double box chống móp méo, giao nhanh toàn quốc từ 24 - 48 giờ.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon-box"><i class="fas fa-sync-alt"></i></div>
+                        <h5 class="fw-bold mb-3">Bảo Hành & Đổi Trả</h5>
+                        <p class="text-muted small mb-0">Hỗ trợ đổi Size linh hoạt trong vòng 7 ngày, quy trình tự động và nhanh chóng.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TIMELINE & BRANDS -->
+        <div class="col-lg-6 mt-5 pt-4">
+            <h2 class="section-title">LỊCH SỬ PHÁT TRIỂN</h2>
+            <div class="timeline-container ps-3">
+                <div class="timeline-item">
+                    <div class="timeline-year">2018</div>
+                    <div class="timeline-content">
+                        <h5>Khởi Nguyên</h5>
+                        <p class="mb-0 text-muted">Bắt đầu từ một shop nhỏ tại lòng Sài Gòn, ấp ủ giấc mơ lan tỏa văn hóa Sneaker đến thế hệ GenZ Việt.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2020</div>
+                    <div class="timeline-content">
+                        <h5>Bùng Nổ & Số Hóa</h5>
+                        <p class="mb-0 text-muted">Chuyển mình mạnh mẽ lên không gian số, mở kho tổng và liên kết các đơn vị vận chuyển hàng đầu.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2026</div>
+                    <div class="timeline-content">
+                        <h5>Hệ Sinh Thái Mới</h5>
+                        <p class="mb-0 text-muted">Trở thành chuỗi cửa hàng giày trực tuyến số 1 với hệ thống quản lý chuẩn hóa dữ liệu cao cấp.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mt-5 pt-4">
+            <h2 class="section-title">THƯƠNG HIỆU ĐỐI TÁC</h2>
+            <p class="text-muted mb-4">Mạng lưới phân phối của Vua Giày Hiệu sở hữu thư viện từ các đế chế Sneaker khổng lồ nhất hành tinh, tiêu biểu như:</p>
+            <div class="row g-3">
+                <div class="col-6"><div class="brand-box"><i class="fab fa-neos me-2"></i> NIKE</div></div>
+                <div class="col-6"><div class="brand-box">ADIDAS</div></div>
+                <div class="col-6"><div class="brand-box">PUMA</div></div>
+                <div class="col-6"><div class="brand-box">CONVERSE</div></div>
+                <div class="col-6"><div class="brand-box">VANS</div></div>
+                <div class="col-6"><div class="brand-box">NEW BALANCE</div></div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="col-12">
+            <div class="cta-banner shadow-lg">
+                <h2 class="fw-bold mb-3">TỰ TIN BƯỚC XUỐNG PHỐ?</h2>
+                <p class="fs-5 opacity-75 mb-4">Hàng trăm siêu phẩm mới nhất đã cập bến kho hàng Vua Giày Hiệu. Khai phá ngay diện mạo mới cho đôi chân của bạn!</p>
+                <a asp-controller="Home" asp-action="Cuahang" class="btn btn-danger btn-lg px-5 py-3 fw-bold rounded-pill text-uppercase shadow">
+                    Khám Phá Cửa Hàng Ngay <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+
     </div>
 </div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Gioithieu.css" asp-append-version="true" />
+}

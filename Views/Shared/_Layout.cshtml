@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -10,6 +10,9 @@
     <meta name="author" content="Vua Giày Hiệu" />
     <title>@ViewData["Title"] ?? "Vua Giày Hiệu - Cửa Hàng Giày Hiệu Uy Tín"</title>
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -23,7 +26,8 @@
 </head>
 
 <body>
-    <header class="header-top bg-white shadow-sm">
+    <div class="header-wrapper shadow-sm">
+        <header class="header-top bg-white">
         <div class="container">
             <div class="row align-items-center py-3">
                 <div class="col-lg-3 col-md-4">
@@ -36,9 +40,9 @@
                 </div>
 
                 <div class="col-lg-6 col-md-4 d-none d-md-block">
-                    <form asp-controller="Shoes" asp-action="Index" method="get" class="search-box d-flex">
-                        <input type="text" name="search"
-                               value="@(ViewContext.HttpContext.Request.Query["search"].ToString())"
+                    <form asp-controller="Home" asp-action="Cuahang" method="get" class="search-box d-flex">
+                        <input type="text" name="searchString"
+                               value="@(ViewContext.HttpContext.Request.Query["searchString"].ToString())"
                                class="form-control rounded-0" placeholder="Tìm kiếm giày..." />
                         <button type="submit" class="btn btn-danger rounded-0 px-4">
                             <i class="fas fa-search"></i>
@@ -68,7 +72,7 @@
         </div>
     </header>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark pb-2 pt-2">
         <div class="container">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -83,7 +87,7 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Cuahang" ? "active" : "")"
-                           href="#" role="button" data-bs-toggle="dropdown">
+                           href="javascript:void(0)" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-store me-1"></i>Cửa hàng
                         </a>
                         <ul class="dropdown-menu">
@@ -116,13 +120,34 @@
                         </a>
                     </li>
 
-                    @if (User.Identity != null && User.Identity.IsAuthenticated && Context.Session.GetString("UserRole")?.Trim() == "Admin")
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
-                        <li class="nav-item">
-                            <a class="nav-link text-warning fw-bold" asp-controller="AdminOrder" asp-action="Shoes">
-                                <i class="fas fa-user-shield me-1"></i>TRANG QUẢN TRỊ
-                            </a>
-                        </li>
+                        if (User.IsInRole("Admin") || User.IsInRole("StoreOwner"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-warning fw-bold" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user-shield me-1"></i>TRANG QUẢN TRỊ
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-controller="AdminOrder" asp-action="Dashboard"><i class="fas fa-chart-line me-1"></i> Thống kê</a></li>
+                                    <li><a class="dropdown-item" asp-controller="AdminOrder" asp-action="Orders"><i class="fas fa-box me-1"></i> Quản lý Đơn hàng</a></li>
+                                    <li><a class="dropdown-item" asp-controller="AdminOrder" asp-action="Shoes"><i class="fas fa-shoe-prints me-1"></i> Quản lý Sản phẩm</a></li>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" asp-controller="AdminOrder" asp-action="Users"><i class="fas fa-users-cog me-1"></i> Quản lý Tài khoản</a></li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                        if (User.IsInRole("Shipper"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-info fw-bold" asp-controller="Shipper" asp-action="Index">
+                                    <i class="fas fa-truck-fast me-1"></i>GIAO HÀNG
+                                </a>
+                            </li>
+                        }
                     }
                 </ul>
 
@@ -165,24 +190,28 @@
             </div>
         </div>
     </nav>
+    </div>
 
     <main class="main-content">
-        <div class="container mt-4">
-            @if (TempData["SuccessMessage"] != null)
-            {
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fas fa-circle-check"></i> @TempData["SuccessMessage"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            }
-            @if (TempData["ErrorMessage"] != null)
-            {
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="fas fa-triangle-exclamation"></i> @TempData["ErrorMessage"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            }
-        </div>
+        @if (TempData["SuccessMessage"] != null || TempData["ErrorMessage"] != null)
+        {
+            <div class="container mt-4">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                        <i class="fas fa-circle-check me-2"></i>@TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                        <i class="fas fa-triangle-exclamation me-2"></i>@TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+            </div>
+        }
 
         @RenderBody()
     </main>
@@ -198,29 +227,29 @@
                         Cửa hàng chuyên cung cấp giày hiệu chính hãng và replica chất lượng cao với giá cả phải chăng.
                     </p>
                     <div class="d-flex gap-2">
-                        <a href="#" class="btn btn-outline-light btn-sm"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="btn btn-outline-light btn-sm"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="btn btn-outline-light btn-sm"><i class="fab fa-tiktok"></i></a>
+                        <a href="javascript:void(0)" class="btn btn-outline-light btn-sm"><i class="fab fa-facebook-f"></i></a>
+                        <a href="javascript:void(0)" class="btn btn-outline-light btn-sm"><i class="fab fa-instagram"></i></a>
+                        <a href="javascript:void(0)" class="btn btn-outline-light btn-sm"><i class="fab fa-tiktok"></i></a>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-6">
                     <h6 class="fw-bold mb-3">SẢN PHẨM</h6>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="/Shoes" class="text-muted text-decoration-none footer-links"><i class="fas fa-angle-right me-1"></i>Tất cả sản phẩm</a></li>
-                        <li class="mb-2"><a href="/Shoes?category=nam" class="text-muted text-decoration-none footer-links"><i class="fas fa-angle-right me-1"></i>Giày Nam</a></li>
-                        <li class="mb-2"><a href="/Shoes?category=nu" class="text-muted text-decoration-none footer-links"><i class="fas fa-angle-right me-1"></i>Giày Nữ</a></li>
-                        <li class="mb-2"><a href="/Shoes?category=dep" class="text-muted text-decoration-none footer-links"><i class="fas fa-angle-right me-1"></i>Dép</a></li>
+                        <li class="mb-2"><a asp-controller="Home" asp-action="Cuahang" class="text-muted text-decoration-none footer-links"><i class="fas fa-angle-right me-1"></i>Tất cả sản phẩm</a></li>
+                        <li class="mb-2"><a asp-controller="Shoes" asp-action="Index" asp-route-category="Giày Nam" class="text-muted text-decoration-none footer-links"><i class="fas fa-angle-right me-1"></i>Giày Nam</a></li>
+                        <li class="mb-2"><a asp-controller="Shoes" asp-action="Index" asp-route-category="Giày Nữ" class="text-muted text-decoration-none footer-links"><i class="fas fa-angle-right me-1"></i>Giày Nữ</a></li>
+                        <li class="mb-2"><a asp-controller="Shoes" asp-action="Index" asp-route-category="Dép" class="text-muted text-decoration-none footer-links"><i class="fas fa-angle-right me-1"></i>Dép</a></li>
                     </ul>
                 </div>
 
                 <div class="col-lg-3 col-md-6">
                     <h6 class="fw-bold mb-3">HỖ TRỢ</h6>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="/Home/Gioithieu" class="text-muted text-decoration-none footer-links"><i class="fas fa-angle-right me-1"></i>Về chúng tôi</a></li>
-                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none footer-links"><i class="fas fa-angle-right me-1"></i>Chính sách bán hàng</a></li>
-                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none footer-links"><i class="fas fa-angle-right me-1"></i>Hướng dẫn thanh toán</a></li>
-                        <li class="mb-2"><a href="/Home/LienHe" class="text-muted text-decoration-none footer-links"><i class="fas fa-angle-right me-1"></i>Liên hệ</a></li>
+                        <li class="mb-2"><a asp-controller="Home" asp-action="Gioithieu" class="text-muted text-decoration-none footer-links"><i class="fas fa-angle-right me-1"></i>Về chúng tôi</a></li>
+                        <li class="mb-2"><a asp-controller="Home" asp-action="Gioithieu" class="text-muted text-decoration-none footer-links"><i class="fas fa-angle-right me-1"></i>Chính sách bán hàng</a></li>
+                        <li class="mb-2"><a asp-controller="Home" asp-action="Gioithieu" class="text-muted text-decoration-none footer-links"><i class="fas fa-angle-right me-1"></i>Hướng dẫn thanh toán</a></li>
+                        <li class="mb-2"><a asp-controller="Home" asp-action="LienHe" class="text-muted text-decoration-none footer-links"><i class="fas fa-angle-right me-1"></i>Liên hệ</a></li>
                     </ul>
                 </div>
 
@@ -242,7 +271,7 @@
                     <p class="text-muted mb-0">&copy; 2026 Vua Giày Hiệu. Tất cả quyền được bảo lưu.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <small class="text-muted">Phát triển bởi <a href="#" class="text-danger text-decoration-none">Vua Giày Hiệu Team</a></small>
+                    <small class="text-muted">Phát triển bởi <a href="javascript:void(0)" class="text-danger text-decoration-none">Vua Giày Hiệu Team</a></small>
                 </div>
             </div>
         </div>
@@ -254,14 +283,20 @@
 
     <script>
         function updateCartCount() {
-            $.get('/Cart/GetCartCount', function(data) {
-                if (data.count > 0) {
-                    $('#cart-count').text(data.count).show();
-                } else {
-                    $('#cart-count').hide();
+            $.ajax({
+                url: '/Cart/GetCartCount',
+                type: 'GET',
+                cache: false,
+                success: function(data) {
+                    if (data.count > 0) {
+                        $('#cart-count').text(data.count).show();
+                    } else {
+                        $('#cart-count').hide();
+                    }
+                },
+                error: function() {
+                    console.log('Không thể tải số lượng giỏ hàng');
                 }
-            }).fail(function() {
-                console.log('Không thể tải số lượng giỏ hàng');
             });
         }
 

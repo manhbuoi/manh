@@ -1,0 +1,266 @@
+@{
+    ViewData["Title"] = "Mạng Lưới Tin Tức - Vua Giày Hiệu";
+}
+
+<style>
+    /* LOCAL DARK-TECH OVERRIDES FOR BLOG */
+    .blog-header {
+        background: linear-gradient(180deg, rgba(5,5,10,0.9) 0%, rgba(5,5,10,0.4) 100%), url('https://images.unsplash.com/photo-1552346154-21d32810baa3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80') center center/cover;
+        padding: 6rem 0;
+        text-align: center;
+        border-bottom: 1px solid var(--glass-border);
+        margin-top: -30px;
+    }
+    
+    .blog-title {
+        font-family: var(--font-display);
+        font-size: 3.5rem;
+        letter-spacing: 2px;
+        color: #fff;
+        text-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+    }
+
+    .article-img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        opacity: 0.85;
+        transition: opacity 0.3s;
+    }
+
+    .article-card:hover .article-img {
+        opacity: 1;
+    }
+
+    .comments-section {
+        background: rgba(0,0,0,0.2);
+        border-top: 1px solid rgba(255,255,255,0.05);
+        display: none; /* hidden by default, toggled by JS */
+    }
+
+    .comment-bubble {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 8px;
+        padding: 10px 15px;
+        margin-bottom: 15px;
+    }
+
+    .btn-action {
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        transition: all 0.3s;
+        font-family: var(--font-display);
+        font-size: 1.1rem;
+    }
+
+    .btn-action:hover {
+        color: var(--neon-blue);
+        text-shadow: 0 0 10px rgba(0,240,255,0.5);
+    }
+
+    .btn-action.liked {
+        color: #FF003C;
+        text-shadow: 0 0 15px rgba(255,0,60,0.6);
+    }
+
+    .btn-action.liked i {
+        animation: heartbeat 0.4s ease-in-out;
+    }
+
+    @@keyframes heartbeat {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.4); }
+        100% { transform: scale(1); }
+    }
+</style>
+
+<div class="blog-header mb-5">
+    <div class="container">
+        <h1 class="blog-title">MẠNG LƯỚI THÔNG TIN</h1>
+        <p class="text-white" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto; text-shadow: 0 0 10px rgba(0,0,0,1);">Giải mã công nghệ lõi, cập nhật biến động thị trường và khám phá kỷ nguyên sneakers.</p>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row g-4">
+        
+        <!-- ARTICLE 1 -->
+        <div class="col-lg-6">
+            <div class="glass-panel p-0 h-100 d-flex flex-column article-card overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1608231387042-66d1773070a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="News Image" class="article-img">
+                <div class="p-4 flex-grow-1">
+                    <span class="badge mb-2" style="background: rgba(0,240,255,0.2); border: 1px solid var(--neon-blue); color: var(--neon-blue);">CÔNG NGHỆ VẬT LIỆU</span>
+                    <h3 class="text-white brand-font mb-3">Tối Ưu Hóa Sợi Carbon Phản Quang Ban Đêm</h3>
+                    <p class="text-muted" style="line-height: 1.6; font-size: 0.95rem;">Đột phá mới nhất trong hệ thống chất phủ phản quang giúp tối đa hóa khả năng nhận diện trên đường phố vào ban đêm, đồng thời giảm 15% trọng lượng của đôi giày.</p>
+                </div>
+                
+                <div class="p-3 border-top d-flex justify-content-between align-items-center" style="border-color: rgba(255,255,255,0.05) !important; background: rgba(0,0,0,0.2);">
+                    <div class="d-flex gap-3">
+                        <button class="btn-action btn-like" data-id="1">
+                            <i class="fas fa-heart me-1"></i> <span class="like-count">1,240</span>
+                        </button>
+                        <button class="btn-action btn-comment" data-target="#comments-1">
+                            <i class="fas fa-comment-alt me-1"></i> <span class="comment-count">3</span>
+                        </button>
+                    </div>
+                    <span class="text-muted" style="font-size: 0.8rem; font-family: var(--font-display);">THỜI GIAN TRUYỀN TẢI: 2 GIỜ TRƯỚC</span>
+                </div>
+
+                <!-- COMMENTS SECTION 1 -->
+                <div class="comments-section p-4" id="comments-1">
+                    <h5 class="text-white brand-font mb-4" style="color: var(--neon-blue) !important;">DỮ LIỆU BÌNH LUẬN</h5>
+                    
+                    <div class="comments-list">
+                        <div class="d-flex gap-3 mb-3">
+                            <div class="rounded-circle bg-dark d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border: 1px solid var(--neon-blue);">
+                                <i class="fas fa-user-astronaut" style="color: var(--neon-blue);"></i>
+                            </div>
+                            <div class="comment-bubble flex-grow-1">
+                                <strong class="text-white d-block mb-1" style="font-family: var(--font-display);">@("CyberPunk2077")</strong>
+                                <span class="text-muted" style="font-size: 0.9rem;">Thiết kế quá đỉnh! Vật liệu này khi nào mới áp dụng đại trà nhỉ?</span>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-3 mb-3">
+                            <div class="rounded-circle bg-dark d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border: 1px solid var(--neon-purple);">
+                                <i class="fas fa-robot" style="color: var(--neon-purple);"></i>
+                            </div>
+                            <div class="comment-bubble flex-grow-1">
+                                <strong class="text-white d-block mb-1" style="font-family: var(--font-display);">NightCity_Runner</strong>
+                                <span class="text-muted" style="font-size: 0.9rem;">Thích hợp cho runner đêm. Tôi đã đặt gạch chờ ngày ra mắt.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <input type="text" class="form-control form-glass comment-input" placeholder="Nhập mã bình luận của bạn..." />
+                        <button class="btn-glass-solid btn-send-comment"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ARTICLE 2 -->
+        <div class="col-lg-6">
+            <div class="glass-panel p-0 h-100 d-flex flex-column article-card overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="News Image 2" class="article-img">
+                <div class="p-4 flex-grow-1">
+                    <span class="badge mb-2" style="background: rgba(178,0,255,0.2); border: 1px solid var(--neon-purple); color: #E0B0FF;">HỒ SƠ MẬT</span>
+                    <h3 class="text-white brand-font mb-3">Giải Mã Hệ Thống Đế Giày Air Jordan Mới</h3>
+                    <p class="text-muted" style="line-height: 1.6; font-size: 0.95rem;">Được cho là rò rỉ từ kho lưu trữ trung tâm, bộ bản vẽ thiết kế mới nhất của Jordan hé lộ cấu trúc phản lực ẩn bên trong.</p>
+                </div>
+                
+                <div class="p-3 border-top d-flex justify-content-between align-items-center" style="border-color: rgba(255,255,255,0.05) !important; background: rgba(0,0,0,0.2);">
+                    <div class="d-flex gap-3">
+                        <button class="btn-action btn-like" data-id="2">
+                            <i class="fas fa-heart me-1"></i> <span class="like-count">3,892</span>
+                        </button>
+                        <button class="btn-action btn-comment" data-target="#comments-2">
+                            <i class="fas fa-comment-alt me-1"></i> <span class="comment-count">1</span>
+                        </button>
+                    </div>
+                    <span class="text-muted" style="font-size: 0.8rem; font-family: var(--font-display);">THỜI GIAN TRUYỀN TẢI: 5 GIỜ TRƯỚC</span>
+                </div>
+
+                <!-- COMMENTS SECTION 2 -->
+                <div class="comments-section p-4" id="comments-2">
+                    <h5 class="text-white brand-font mb-4" style="color: var(--neon-blue) !important;">DỮ LIỆU BÌNH LUẬN</h5>
+                    
+                    <div class="comments-list">
+                        <div class="d-flex gap-3 mb-3">
+                            <div class="rounded-circle bg-dark d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border: 1px solid #FF003C;">
+                                <i class="fas fa-fire" style="color: #FF003C;"></i>
+                            </div>
+                            <div class="comment-bubble flex-grow-1">
+                                <strong class="text-white d-block mb-1" style="font-family: var(--font-display);">SneakerHead_99</strong>
+                                <span class="text-muted" style="font-size: 0.9rem;">Hệ thống này quá bạo, phá vỡ mọi định luật vật lý!</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <input type="text" class="form-control form-glass comment-input" placeholder="Nhập mã bình luận của bạn..." />
+                        <button class="btn-glass-solid btn-send-comment"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    $(document).ready(function() {
+        // Toggle Comments
+        $('.btn-comment').click(function() {
+            const target = $(this).data('target');
+            $(target).slideToggle(300);
+        });
+
+        // Like/Heart Interaction
+        $('.btn-like').click(function() {
+            var $btn = $(this);
+            var $countSpan = $btn.find('.like-count');
+            var currentCount = parseInt($countSpan.text().replace(/,/g, ''));
+            
+            if($btn.hasClass('liked')) {
+                // Unlike
+                $btn.removeClass('liked');
+                currentCount--;
+            } else {
+                // Like
+                $btn.addClass('liked');
+                currentCount++;
+            }
+            
+            $countSpan.text(currentCount.toLocaleString());
+        });
+
+        // Add Comment
+        $('.btn-send-comment').click(function() {
+            var $container = $(this).closest('.comments-section');
+            var $input = $container.find('.comment-input');
+            var text = $input.val().trim();
+            
+            if(text !== "") {
+                var newCommentHtml = `
+                    <div class="d-flex gap-3 mb-3 hide-initial" style="display:none;">
+                        <div class="rounded-circle bg-dark d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border: 1px solid var(--neon-blue);">
+                            <i class="fas fa-user" style="color: var(--neon-blue);"></i>
+                        </div>
+                        <div class="comment-bubble flex-grow-1" style="border-color: var(--neon-blue);">
+                            <strong class="text-white d-block mb-1" style="font-family: var(--font-display);">Người Truy cập Ẩn Danh</strong>
+                            <span class="text-white" style="font-size: 0.9rem;">${text}</span>
+                        </div>
+                    </div>
+                `;
+                
+                var $newElem = $(newCommentHtml);
+                $container.find('.comments-list').append($newElem);
+                $newElem.slideDown(300);
+                $input.val("");
+
+                // Update Comment Count Text
+                var targetId = $container.attr('id');
+                var $commentBtn = $('button[data-target="#' + targetId + '"]');
+                var $commentCount = $commentBtn.find('.comment-count');
+                var cCount = parseInt($commentCount.text());
+                $commentCount.text(cCount + 1);
+            }
+        });
+
+        // Enter key to submit comment
+        $('.comment-input').keypress(function(e){
+            if(e.which == 13){
+                $(this).siblings('.btn-send-comment').click();
+            }
+        });
+    });
+</script>
+}

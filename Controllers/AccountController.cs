@@ -1,6 +1,7 @@
 using System;
 using System.Security.Claims;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -52,10 +53,11 @@ namespace cuahanggiay.Controllers
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.FullName ?? user.Email),
                     new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Role, user.Role ?? "Customer") // Lấy quyền từ Database
+                    // Lấy quyền từ Database (mặc định là Customer nếu null)
+                    new Claim(ClaimTypes.Role, user.Role ?? "Customer") 
                 };
 
-                // ĐÃ SỬA: Phải chỉ định rõ ClaimTypes.Name và ClaimTypes.Role để User.IsInRole("Admin") hoạt động
+                // Phải chỉ định rõ ClaimTypes.Name và ClaimTypes.Role để User.IsInRole() hoạt động
                 var identity = new ClaimsIdentity(claims, "CustomerSecurityScheme", ClaimTypes.Name, ClaimTypes.Role);
                 var principal = new ClaimsPrincipal(identity);
 
@@ -73,10 +75,14 @@ namespace cuahanggiay.Controllers
                     return Redirect(returnUrl);
                 }
 
-                // Nếu là Admin thì đưa thẳng vào trang Quản trị, nếu khách thì về Trang chủ
-                if (user.Role == "Admin")
+                // Redirect dựa trên Role
+                if (user.Role == "Admin" || user.Role == "StoreOwner")
                 {
-                    return RedirectToAction("Shoes", "AdminOrder");
+                    return RedirectToAction("Index", "AdminOrder"); // Bạn nhớ tạo AdminOrderController nhé
+                }
+                else if (user.Role == "Shipper")
+                {
+                    return RedirectToAction("Index", "Shipper"); // Bạn nhớ tạo ShipperController nhé
                 }
 
                 return RedirectToAction("Index", "Home");
@@ -132,7 +138,6 @@ namespace cuahanggiay.Controllers
                 new Claim(ClaimTypes.Role, newUser.Role ?? "Customer")
             };
 
-            // ĐÃ SỬA: Chỉ định rõ Name và Role cho hệ thống phân quyền
             var identity = new ClaimsIdentity(claims, "CustomerSecurityScheme", ClaimTypes.Name, ClaimTypes.Role);
             var principal = new ClaimsPrincipal(identity);
 
